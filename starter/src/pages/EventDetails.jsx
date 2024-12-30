@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 
-// Define the loader function for EventDetails
+// Loader function
 export const loader = async ({ params }) => {
   const { eventId } = params;
 
-  // Fetch the event details
   const eventResponse = await fetch(`http://localhost:3000/events/${eventId}`);
   const categoriesResponse = await fetch(`http://localhost:3000/categories`);
 
@@ -21,23 +20,25 @@ export const loader = async ({ params }) => {
 
 const EventDetails = () => {
   const { event: initialEvent, categories } = useLoaderData();
-
   const [editedEvent, setEditedEvent] = useState({
     ...initialEvent,
-    categoryIds: initialEvent.categoryIds || [], // Ensure this is an array
+    categoryIds: initialEvent.categoryIds || [], // Default to empty array if undefined
   });
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditedEvent({
-      ...editedEvent,
+    setEditedEvent((prev) => ({
+      ...prev,
       [name]:
-        name === "categoryIds" ? value.split(",").map((v) => v.trim()) : value,
-    });
+        name === "categoryIds"
+          ? value
+              .split(",")
+              .map((id) => id.trim())
+              .filter(Boolean)
+          : value,
+    }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     const updatedEvent = {
@@ -50,9 +51,7 @@ const EventDetails = () => {
         `http://localhost:3000/events/${initialEvent.id}`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedEvent),
         }
       );
@@ -66,6 +65,11 @@ const EventDetails = () => {
       console.error("Error updating event:", error);
     }
   };
+
+  // Filter categories for display
+  const selectedCategories = categories.filter((category) =>
+    editedEvent.categoryIds.includes(category.id)
+  );
 
   return (
     <div>
@@ -114,12 +118,32 @@ const EventDetails = () => {
         <button type="submit">Save Changes</button>
       </form>
 
-      <h3>Categories</h3>
+      <h3>Selected Categories</h3>
+      {selectedCategories.length > 0 ? (
+        <ul>
+          {selectedCategories.map((category) => (
+            <li key={category.id}>{category.name}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No categories found for this event.</p>
+      )}
+
+      <h3>All Categories</h3>
       <select
-        name="categories"
+        name="categoryIds"
         multiple
         value={editedEvent.categoryIds}
-        onChange={handleChange}
+        onChange={(e) => {
+          const options = Array.from(e.target.options);
+          const selectedIds = options
+            .filter((option) => option.selected)
+            .map((option) => option.value);
+          setEditedEvent((prev) => ({
+            ...prev,
+            categoryIds: selectedIds,
+          }));
+        }}
       >
         {categories.map((category) => (
           <option key={category.id} value={category.id}>
