@@ -6,11 +6,15 @@ export const Navigation = () => {
   return (
     <nav className={styles.navbar}>
       <ul className={styles.menuItems}>
-        <li className={styles.title}>
-          <Link to="/">Events</Link>
+        <li className={styles.menuItem}>
+          <Link className={styles.menuLink} to="/">
+            Events
+          </Link>
         </li>
-        <li>
-          <Link to="/event/1">Event</Link>
+        <li className={styles.menuItem}>
+          <Link className={styles.menuLink} to="/event/1">
+            Event
+          </Link>
         </li>
       </ul>
     </nav>
