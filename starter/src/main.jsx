@@ -10,6 +10,7 @@ import { loader } from "./pages/EventsPage";
 import EventDetails, {
   loader as eventDetailsLoader,
 } from "./pages/EventDetails";
+
 const router = createBrowserRouter([
   {
     path: "/",

@@ -1,0 +1,47 @@
+@import url("https://fonts.googleapis.com/css2?family=Gravitas+One&family=Jersey+10&family=Pacifico&family=Rubik+Mono+One&family=Sixtyfour+Convergence&display=swap");
+
+:root {
+  --color-text: #333; /* Ensure this is globally defined */
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.navbar {
+  font-family: "Jersey 10", "Times New Roman", serif;
+  font-weight: 400;
+  font-style: normal;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 61px;
+  z-index: 2;
+  margin: 0 10%;
+}
+
+.menuItems {
+  display: flex;
+  gap: 47px;
+  list-style: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.menuItems li:hover {
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding-top: 20px;
+  }
+
+  .menuItems {
+    gap: 20px;
+  }
+}
