@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLoaderData, Link } from "react-router-dom";
-import { Button } from "../components/ui/Button";
+import { Box, Heading, Text, Flex, VStack, Spinner } from "@chakra-ui/react";
 import { SearchFilter } from "../components/SearchFilter";
 import { TextInput } from "../components/ui/TextInput";
+import Button from "../components/ui/Button";
 
+// Loader for fetching data
 export const loader = async () => {
   const eventsResponse = await fetch("http://localhost:3000/events");
   const categoriesResponse = await fetch("http://localhost:3000/categories");
@@ -15,10 +17,7 @@ export const loader = async () => {
   const events = await eventsResponse.json();
   const categories = await categoriesResponse.json();
 
-  return {
-    events,
-    categories,
-  };
+  return { events, categories };
 };
 
 export const EventsPage = () => {
@@ -27,6 +26,7 @@ export const EventsPage = () => {
   // States for search and category filtering
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Handle search query change
   const handleSearchChange = (e) => {
@@ -52,26 +52,43 @@ export const EventsPage = () => {
     return matchesSearch && matchesCategory;
   });
 
+  // Use effect to simulate loading state during filtering
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => setLoading(false), 500); // Simulate a delay when filtering
+
+    return () => clearTimeout(timer); // Cleanup on component unmount or when the search/filtering changes
+  }, [searchQuery, selectedCategory]);
+
   return (
-    <div className="event-list">
+    <Box padding={5}>
       {/* Search input */}
-      <TextInput
-        id="search-input"
-        value={searchQuery}
-        changeFn={handleSearchChange}
-        placeholder="Search for events..."
-      />
+      <VStack spacing={4} align="stretch" mb={6}>
+        <TextInput
+          value={searchQuery}
+          changeFn={handleSearchChange}
+          placeholder="Search for events..."
+        />
+        <SearchFilter
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
+        />
+      </VStack>
 
-      {/* Category filter */}
-      <SearchFilter
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onCategoryChange={handleCategoryChange}
-      />
+      {/* Heading */}
+      <Heading as="h1" size="xl" mb={6} textAlign="center">
+        List of Events
+      </Heading>
 
-      <h1>List of Events</h1>
-      {filteredEvents.length === 0 ? (
-        <p>No events available.</p>
+      {loading ? (
+        <Flex justify="center" align="center" height="50vh">
+          <Spinner size="xl" />
+        </Flex>
+      ) : filteredEvents.length === 0 ? (
+        <Text textAlign="center">
+          No events found. Try adjusting your search or category filter.
+        </Text>
       ) : (
         filteredEvents.map((event) => {
           const categoryIds = Array.isArray(event.categoryIds)
@@ -89,35 +106,68 @@ export const EventsPage = () => {
             .filter(Boolean);
 
           return (
-            <div key={event.id} className="event">
+            <Box
+              key={event.id}
+              bg="white"
+              boxShadow="lg"
+              borderRadius="md"
+              p={5}
+              mb={6}
+              _hover={{ transform: "scale(1.05)", transition: "0.3s" }}
+            >
               <Link to={`/event/${event.id}`}>
-                <h2>{event.title}</h2>
+                <Heading as="h2" size="md" color="blue.600">
+                  {event.title}
+                </Heading>
               </Link>
-              <p>{event.description}</p>
-              <p>Start Time: {new Date(event.startTime).toLocaleString()}</p>
-              <p>End Time: {new Date(event.endTime).toLocaleString()}</p>
-              <img src={event.image} alt={event.title || "Event image"} />
-
-              <div className="categories">
-                <h3>Categories:</h3>
+              <Text mt={2} color="gray.700">
+                {event.description}
+              </Text>
+              <Text mt={2} fontSize="sm" color="gray.500">
+                Start Time: {new Date(event.startTime).toLocaleString()}
+              </Text>
+              <Text mt={2} fontSize="sm" color="gray.500">
+                End Time: {new Date(event.endTime).toLocaleString()}
+              </Text>
+              <Box mt={4}>
+                <img src={event.image} alt={event.title} width="100%" />
+              </Box>
+              <Box mt={4}>
+                <Heading as="h3" size="sm">
+                  Categories:
+                </Heading>
                 {eventCategories.length > 0 ? (
-                  <ul>
+                  <Flex flexWrap="wrap" mt={2}>
                     {eventCategories.map((category) => (
-                      <li key={category.id}>{category.name}</li>
+                      <Box
+                        key={category.id}
+                        bg="blue.100"
+                        borderRadius="md"
+                        px={3}
+                        py={1}
+                        m={1}
+                        color="blue.600"
+                      >
+                        {category.name}
+                      </Box>
                     ))}
-                  </ul>
+                  </Flex>
                 ) : (
-                  <p>No categories found for this event</p>
+                  <Text>No categories found for this event</Text>
                 )}
-              </div>
-            </div>
+              </Box>
+            </Box>
           );
         })
       )}
 
-      <div className="action-button">
-        <Button>View More Events</Button>
-      </div>
-    </div>
+      <Flex justify="center" mt={6}>
+        <Link to="/events">
+          <Button colorScheme="blue" size="lg">
+            View More Events
+          </Button>
+        </Link>
+      </Flex>
+    </Box>
   );
 };

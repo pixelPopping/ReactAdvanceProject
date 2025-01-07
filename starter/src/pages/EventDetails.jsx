@@ -1,10 +1,24 @@
 import React, { useState } from "react";
 import { useLoaderData } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify"; // Importing toast
-import "react-toastify/dist/ReactToastify.css"; // Required styles for toast
-import { BackButton } from "../components/ui/BackButton";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  Box,
+  Text,
+  Button,
+  Input,
+  Textarea,
+  Select,
+  Image,
+  VStack,
+  HStack,
+  FormControl,
+  FormLabel,
+  Avatar,
+  SimpleGrid,
+} from "@chakra-ui/react";
+import { BackButton } from "../components/ui/BackButton"; // Assuming this is a custom component
 
-// Toaster component to show notifications
 const Toaster = () => {
   return <ToastContainer />;
 };
@@ -12,33 +26,28 @@ const Toaster = () => {
 export const loader = async ({ params }) => {
   const { eventId } = params;
 
-  console.log("Fetching event details for eventId:", eventId); // Debug: Log the eventId
-
   const eventResponse = await fetch(`http://localhost:3000/events/${eventId}`);
   const categoriesResponse = await fetch("http://localhost:3000/categories");
+  const usersResponse = await fetch("http://localhost:3000/users");
 
-  if (!eventResponse.ok || !categoriesResponse.ok) {
-    console.error("Failed to fetch event or categories"); // Debug: Log fetch errors
-    throw new Error("Failed to fetch event or categories");
+  if (!eventResponse.ok || !categoriesResponse.ok || !usersResponse.ok) {
+    throw new Error("Failed to fetch event, categories, or users");
   }
 
   const event = await eventResponse.json();
   const categories = await categoriesResponse.json();
+  const users = await usersResponse.json();
 
-  console.log("Fetched event data:", event); // Debug: Log the fetched event data
-  console.log("Fetched categories data:", categories); // Debug: Log the fetched categories
-
-  return { event, categories };
+  return { event, categories, users };
 };
 
 const EventDetails = () => {
-  const { event: initialEvent, categories } = useLoaderData();
+  const { event: initialEvent, categories, users } = useLoaderData();
   const [editedEvent, setEditedEvent] = useState({
     ...initialEvent,
-    categoryIds: initialEvent.categoryIds || [], // Default to empty array if undefined
+    categoryIds: initialEvent.categoryIds || [],
   });
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEditedEvent((prev) => ({
@@ -47,13 +56,16 @@ const EventDetails = () => {
         name === "categoryIds"
           ? value
               .split(",")
-              .map((id) => Number(id.trim())) // Ensure `categoryIds` are numbers
+              .map((id) => Number(id.trim()))
               .filter(Boolean)
           : value,
     }));
   };
 
-  // Handle form submission
+  if (!categories || !users || !initialEvent) {
+    return <Text>Loading...</Text>;
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -62,7 +74,6 @@ const EventDetails = () => {
       categoryIds: editedEvent.categoryIds.filter(Boolean),
     };
 
-    // Basic validation
     if (!editedEvent.title || !editedEvent.description) {
       return toast.error("Title and description are required.");
     }
@@ -71,7 +82,6 @@ const EventDetails = () => {
       return toast.error("Start time must be before end time.");
     }
 
-    // Display the loading toast and capture its ID for later updates
     const loadingId = toast.loading("Saving changes, please wait...");
 
     try {
@@ -107,7 +117,6 @@ const EventDetails = () => {
         isLoading: false,
         autoClose: 3000,
       });
-      console.error("Error updating event:", error);
     }
   };
 
@@ -151,97 +160,215 @@ const EventDetails = () => {
         isLoading: false,
         autoClose: 3000,
       });
-      console.error("Error deleting event:", error);
     }
   };
 
   return (
-    <div>
-      <Toaster />{" "}
-      {/* Add the Toaster component to display toast notifications */}
-      <h2>Edit Event</h2>
+    <Box
+      padding="8"
+      boxShadow="sm"
+      borderRadius="lg"
+      bg="white"
+      width="80%"
+      margin="auto"
+    >
+      <Toaster />
+      <Text
+        fontSize="3xl"
+        fontWeight="bold"
+        mb="6"
+        textAlign="center"
+        color="gray.900"
+      >
+        Event Details
+      </Text>
+
+      <Box mb="6" boxShadow="md" borderRadius="md">
+        <Image
+          src={initialEvent.image}
+          alt={initialEvent.title}
+          borderRadius="md"
+          width="100%"
+        />
+      </Box>
+
+      <VStack align="flex-start" spacing={6} mb="6">
+        <Text fontSize="2xl" fontWeight="bold" color="gray.900">
+          {initialEvent.title}
+        </Text>
+        <Text fontSize="lg" color="gray.700">
+          {initialEvent.description}
+        </Text>
+
+        <SimpleGrid columns={2} spacing={6} w="full">
+          <HStack spacing={4} align="center">
+            <Avatar
+              size="sm"
+              src={
+                users.find((user) => user.id === String(initialEvent.createdBy))
+                  ?.image
+              }
+              name={
+                users.find((user) => user.id === String(initialEvent.createdBy))
+                  ?.name
+              }
+            />
+            <Text fontSize="md" color="gray.600">
+              Created by:{" "}
+              <strong>
+                {
+                  users.find(
+                    (user) => user.id === String(initialEvent.createdBy)
+                  )?.name
+                }
+              </strong>
+            </Text>
+          </HStack>
+
+          <VStack align="flex-start" spacing={2}>
+            <Text fontSize="md" color="gray.600">
+              Location: <strong>{initialEvent.location}</strong>
+            </Text>
+            <Text fontSize="sm" color="gray.500">
+              Start Time:{" "}
+              <strong>
+                {new Date(initialEvent.startTime).toLocaleString()}
+              </strong>
+            </Text>
+            <Text fontSize="sm" color="gray.500">
+              End Time:{" "}
+              <strong>{new Date(initialEvent.endTime).toLocaleString()}</strong>
+            </Text>
+          </VStack>
+        </SimpleGrid>
+      </VStack>
+
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="title"
-          value={editedEvent.title}
-          onChange={handleChange}
-          placeholder="Event Title"
-        />
-        <textarea
-          name="description"
-          value={editedEvent.description}
-          onChange={handleChange}
-          placeholder="Event Description"
-        />
-        <input
-          type="datetime-local"
-          name="startTime"
-          value={editedEvent.startTime}
-          onChange={handleChange}
-        />
-        <input
-          type="datetime-local"
-          name="endTime"
-          value={editedEvent.endTime}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="image"
-          value={editedEvent.image}
-          onChange={handleChange}
-          placeholder="Image URL"
-        />
-        {editedEvent.image && <img src={editedEvent.image} alt="Preview" />}
+        <VStack spacing={6} align="stretch">
+          <FormControl isRequired>
+            <FormLabel>Event Title</FormLabel>
+            <Input
+              type="text"
+              name="title"
+              value={editedEvent.title}
+              onChange={handleChange}
+              placeholder="Event Title"
+              borderRadius="md"
+              boxShadow="sm"
+            />
+          </FormControl>
 
-        {/* Category IDs input as text */}
-        <input
-          type="text"
-          name="categoryIds"
-          value={editedEvent.categoryIds}
-          onChange={handleChange}
-          placeholder="Category IDs (comma-separated)"
-        />
+          <FormControl isRequired>
+            <FormLabel>Event Description</FormLabel>
+            <Textarea
+              name="description"
+              value={editedEvent.description}
+              onChange={handleChange}
+              placeholder="Event Description"
+              borderRadius="md"
+              boxShadow="sm"
+            />
+          </FormControl>
 
-        {/* Category selection dropdown */}
-        <h3>Categories</h3>
-        <select
-          name="categoryIds"
-          multiple
-          value={editedEvent.categoryIds} // Convert to string for the select element
-          onChange={(e) =>
-            handleChange({
-              target: {
-                name: "categoryIds",
-                value: Array.from(e.target.selectedOptions)
-                  .map((opt) => opt.value)
-                  .join(", "),
-              },
-            })
-          }
-        >
-          {categories.map((category) => (
-            <option key={category.id} value={String(category.id)}>
-              {category.name}
-            </option>
-          ))}
-        </select>
+          <FormControl isRequired>
+            <FormLabel>Start Time</FormLabel>
+            <Input
+              type="datetime-local"
+              name="startTime"
+              value={editedEvent.startTime}
+              onChange={handleChange}
+              borderRadius="md"
+              boxShadow="sm"
+            />
+          </FormControl>
 
-        {/* Submit Button */}
-        <button type="submit">Save Changes</button>
+          <FormControl isRequired>
+            <FormLabel>End Time</FormLabel>
+            <Input
+              type="datetime-local"
+              name="endTime"
+              value={editedEvent.endTime}
+              onChange={handleChange}
+              borderRadius="md"
+              boxShadow="sm"
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>Event Image URL</FormLabel>
+            <Input
+              type="text"
+              name="image"
+              value={editedEvent.image}
+              onChange={handleChange}
+              placeholder="Image URL"
+              borderRadius="md"
+              boxShadow="sm"
+            />
+            {editedEvent.image && (
+              <Image
+                src={editedEvent.image}
+                alt="Preview"
+                boxSize="200px"
+                mt="2"
+              />
+            )}
+          </FormControl>
+
+          <FormControl isRequired>
+            <FormLabel>Categories</FormLabel>
+            <Select
+              name="categoryIds"
+              multiple
+              value={editedEvent.categoryIds.map(String)} // Ensure correct value mapping
+              onChange={(e) =>
+                handleChange({
+                  target: {
+                    name: "categoryIds",
+                    value: Array.from(e.target.selectedOptions)
+                      .map((opt) => opt.value)
+                      .join(", "),
+                  },
+                })
+              }
+              borderRadius="md"
+              boxShadow="sm"
+            >
+              {categories.map((category) => (
+                <option key={category.id} value={String(category.id)}>
+                  {category.name}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+
+          <Button
+            type="submit"
+            colorScheme="blue"
+            width="full"
+            borderRadius="md"
+            boxShadow="md"
+          >
+            Save Changes
+          </Button>
+        </VStack>
       </form>
-      {/* Delete Event Button */}
-      <button
+
+      <Button
         onClick={handleDelete}
-        style={{ marginTop: "20px", backgroundColor: "red", color: "white" }}
+        colorScheme="red"
+        width="full"
+        mt="6"
+        borderRadius="md"
+        boxShadow="md"
       >
         Delete Event
-      </button>
-      <div className="button">
+      </Button>
+
+      <Box mt="6">
         <BackButton>View More Events</BackButton>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

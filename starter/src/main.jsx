@@ -29,7 +29,7 @@ const router = createBrowserRouter([
         // action: addComment,
       },
       {
-        path: "/FormPage/",
+        path: "/FormPage",
         element: <FormPage />,
       },
     ],
