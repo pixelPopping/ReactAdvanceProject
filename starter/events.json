@@ -9,6 +9,11 @@
       "id": "2",
       "name": "Jane Bennett",
       "image": "https://global-uploads.webflow.com/5eecfecbe625d195e35b89f2/624bfb401d7131c760ca1c63_Elieska%20Lensink.jpg"
+    },
+    {
+      "id": "3",
+      "name": "PixxelPopping",
+      "image": "/assets/20230613_164750.jpg"
     }
   ],
   "events": [
@@ -16,14 +21,14 @@
       "id": "1",
       "createdBy": 1,
       "title": "Trampoline party",
-      "description": "Bounce around ",
+      "description": "Bounce around with your friends",
       "image": "https://i.pinimg.com/736x/3d/2f/af/3d2faf4e3188d34a9fcdc00df59e77b0.jpg",
       "categoryIds": [
-        3
+        2
       ],
       "location": "My back yard",
-      "startTime": "2023-03-11T18:00",
-      "endTime": "2023-03-11T19:00"
+      "startTime": "2023-03-10T18:00",
+      "endTime": "2023-03-10T17:00:00.000Z"
     },
     {
       "id": "2",
@@ -57,25 +62,94 @@
       "id": "4",
       "createdBy": 2,
       "title": "Yoga",
-      "description": "It's a bit of a stretch.",
+      "description": "It's a bit of a stretch. ow boy ",
       "image": "https://wincacademy.github.io/webpages/media/pexels-gabby-k-5384538.jpg",
       "categoryIds": [
-        3
+        6,
+        3,
+        1,
+        11
       ],
       "location": "Shavasana Yoga School",
-      "startTime": "2023-03-09T06:00:00.000Z",
-      "endTime": "2023-03-09T07:00:00.000Z"
+      "startTime": "2025-12-17T10:00",
+      "endTime": "2025-12-17T15:00",
+      "categoryId": "1",
+      "date": "2025-12-17",
+      "time": "12:00"
     },
     {
-      "id": "5cf4",
-      "title": "Onze oogappel word 5 jaar",
-      "description": "josh bdayparty",
-      "startTime": "2025-01-18T15:00",
-      "endTime": "2025-01-18T16:00",
-      "image": "www.joshbday.com",
+      "id": "1a04",
+      "title": "Studeren met Ginger ",
+      "description": "@The Usual Rotterdam",
+      "startTime": "2025-01-17T15:00",
+      "endTime": "2025-01-17T17:00",
+      "image": "",
       "categoryIds": [
-        3
-      ]
+        3,
+        8
+      ],
+      "createdBy": 3,
+      "categoryId": "4"
+    },
+    {
+      "id": "5dc5",
+      "title": "Calco",
+      "description": "It TrainingShip",
+      "startTime": "2027-02-07T02:00",
+      "endTime": "2027-02-08T10:00",
+      "image": "https://www.calco.nl/",
+      "categoryIds": [
+        4,
+        3,
+        2
+      ],
+      "createdBy": 3,
+      "categoryId": 1
+    },
+    {
+      "id": "4caf",
+      "title": "Slipknot",
+      "description": "Rock",
+      "startTime": "2025-12-17T10:00",
+      "endTime": "2025-12-17T11:00",
+      "image": "",
+      "categoryIds": [
+        7,
+        3,
+        5,
+        9,
+        10,
+        13
+      ],
+      "createdBy": 3
+    },
+    {
+      "id": "e36b",
+      "title": "Metallica",
+      "description": "Rock In Lasvegas",
+      "startTime": "2025-04-25T10:00",
+      "endTime": "2025-04-25T12:00",
+      "image": "",
+      "categoryIds": [
+        7,
+        3,
+        5
+      ],
+      "createdBy": 3
+    },
+    {
+      "id": "a018",
+      "title": "Devworld",
+      "description": "IT coference @Amsterdam Rai",
+      "startTime": "2025-01-27T13:00",
+      "endTime": "2025-01-27T14:00",
+      "image": "",
+      "categoryIds": [
+        4,
+        3,
+        2
+      ],
+      "createdBy": 3
     }
   ],
   "categories": [
@@ -90,6 +164,50 @@
     {
       "name": "relaxation",
       "id": "3"
+    },
+    {
+      "name": "Conferenties",
+      "id": "4"
+    },
+    {
+      "name": "Party",
+      "id": "5"
+    },
+    {
+      "name": "Health",
+      "id": "6"
+    },
+    {
+      "name": "Concert",
+      "id": "7"
+    },
+    {
+      "name": "Study",
+      "id": "8"
+    },
+    {
+      "name": "Food",
+      "id": "9"
+    },
+    {
+      "name": "Travel",
+      "id": "10"
+    },
+    {
+      "name": "Dating",
+      "id": "11"
+    },
+    {
+      "name": "Art",
+      "id": "12"
+    },
+    {
+      "name": "Photographic",
+      "id": "13"
+    },
+    {
+      "name": "Cooking",
+      "id": "14"
     }
   ]
 }

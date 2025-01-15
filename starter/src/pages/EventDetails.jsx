@@ -1,26 +1,68 @@
-import React, { useState } from "react";
-import { useLoaderData } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import {
   Box,
-  Text,
-  Button,
+  Heading,
   Input,
   Textarea,
-  Select,
-  Image,
+  Button,
   VStack,
-  HStack,
+  useToast,
   FormControl,
   FormLabel,
+  HStack,
   Avatar,
-  SimpleGrid,
+  Spinner,
+  Center,
+  CheckboxGroup,
+  Checkbox,
+  Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
-import { BackButton } from "../components/ui/BackButton"; // Assuming this is a custom component
 
-const Toaster = () => {
-  return <ToastContainer />;
+const pacmanButtonStyle = {
+  backgroundColor: "#FFEB3B",
+  borderRadius: "30px",
+  color: "#FFF",
+  fontWeight: "bold",
+  fontSize: { base: "16px", md: "18px" },
+  padding: "12px 40px",
+  transition: "all 0.3s ease",
+  _hover: {
+    backgroundColor: "#FFCA28",
+    transform: "scale(1.05)",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+  },
+};
+
+const pacmanDeleteButtonStyle = {
+  backgroundColor: "#F44336",
+  borderRadius: "30px",
+  color: "#FFF",
+  fontWeight: "bold",
+  fontSize: { base: "16px", md: "18px" },
+  padding: "12px 40px",
+  transition: "all 0.3s ease",
+  _hover: {
+    backgroundColor: "#E53935",
+    transform: "scale(1.05)",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+  },
+};
+
+const pacmanInputStyle = {
+  borderRadius: "20px",
+  borderColor: "#FFEB3B",
+  _hover: {
+    borderColor: "#FFCA28",
+  },
+  focusBorderColor: "#FFCA28",
 };
 
 export const loader = async ({ params }) => {
@@ -41,333 +83,322 @@ export const loader = async ({ params }) => {
   return { event, categories, users };
 };
 
-const EventDetails = () => {
-  const { event: initialEvent, categories, users } = useLoaderData();
-  const [editedEvent, setEditedEvent] = useState({
-    ...initialEvent,
-    categoryIds: initialEvent.categoryIds || [],
-  });
+export const EventDetails = () => {
+  const { eventId } = useParams();
+  const navigate = useNavigate();
+  const toast = useToast();
+  const [event, setEvent] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState(null);
+  const [initialData, setInitialData] = useState(null);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEditedEvent((prev) => ({
-      ...prev,
-      [name]:
-        name === "categoryIds"
-          ? value
-              .split(",")
-              .map((id) => Number(id.trim()))
-              .filter(Boolean)
-          : value,
-    }));
-  };
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalDescription, setModalDescription] = useState("");
+  const [modalCategoryIds, setModalCategoryIds] = useState([]);
+  const [modalDateTime, setModalDateTime] = useState("");
 
-  if (!categories || !users || !initialEvent) {
-    return <Text>Loading...</Text>;
-  }
+  const location = useLocation(); // Used for conditional rendering of the link
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    const fetchEventData = async () => {
+      try {
+        const eventResponse = await fetch(
+          `http://localhost:3000/events/${eventId}`
+        );
+        const categoriesResponse = await fetch(
+          "http://localhost:3000/categories"
+        );
+        const usersResponse = await fetch("http://localhost:3000/users");
 
-    const updatedEvent = {
-      ...editedEvent,
-      categoryIds: editedEvent.categoryIds.filter(Boolean),
+        if (!eventResponse.ok || !categoriesResponse.ok || !usersResponse.ok) {
+          throw new Error("Failed to fetch event, categories, or users data");
+        }
+
+        const eventData = await eventResponse.json();
+        const categoriesData = await categoriesResponse.json();
+        const usersData = await usersResponse.json();
+
+        const normalizedEvent = {
+          ...eventData,
+          categoryIds: eventData.categoryIds.map((id) => String(id)),
+        };
+
+        setEvent(normalizedEvent);
+        setCategories(categoriesData);
+        setUsers(usersData);
+        setSelectedCategoryIds(normalizedEvent.categoryIds);
+        setInitialData(normalizedEvent);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    if (!editedEvent.title || !editedEvent.description) {
-      return toast.error("Title and description are required.");
-    }
+    fetchEventData();
+  }, [eventId]);
 
-    if (new Date(editedEvent.startTime) >= new Date(editedEvent.endTime)) {
-      return toast.error("Start time must be before end time.");
+  useEffect(() => {
+    if (isModalOpen && initialData) {
+      setModalTitle(initialData.title);
+      setModalDescription(initialData.description);
+      setModalCategoryIds(initialData.categoryIds);
+      setModalDateTime(initialData.dateTime);
     }
+  }, [isModalOpen, initialData]);
 
-    const loadingId = toast.loading("Saving changes, please wait...");
+  const handleCategoryChange = (selectedValues) => {
+    setModalCategoryIds(selectedValues);
+  };
+
+  const handleModalSave = async () => {
+    const updatedEvent = {
+      ...event,
+      title: modalTitle,
+      description: modalDescription,
+      categoryIds: modalCategoryIds.map(Number),
+      dateTime: modalDateTime,
+    };
+
+    setEvent(updatedEvent);
+    setSelectedCategoryIds(modalCategoryIds);
 
     try {
-      const response = await fetch(
-        `http://localhost:3000/events/${initialEvent.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedEvent),
-        }
-      );
+      const response = await fetch(`http://localhost:3000/events/${eventId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedEvent),
+      });
 
-      if (response.ok) {
-        toast.update(loadingId, {
-          render: "Event updated successfully!",
-          type: "success",
-          isLoading: false,
-          autoClose: 3000,
-        });
-      } else {
-        const errorText = await response.text();
-        toast.update(loadingId, {
-          render: `Failed to update event: ${errorText || response.statusText}`,
-          type: "error",
-          isLoading: false,
-          autoClose: 3000,
-        });
+      if (!response.ok) {
+        throw new Error("Failed to update the event");
       }
-    } catch (error) {
-      toast.update(loadingId, {
-        render: "An error occurred while updating the event.",
-        type: "error",
-        isLoading: false,
-        autoClose: 3000,
+
+      toast({
+        title: "Event updated successfully!",
+        description: "Your event has been updated.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      setIsModalOpen(false); // Close the modal after saving
+    } catch (err) {
+      toast({
+        title: "Error updating event.",
+        description: err.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
       });
     }
   };
 
-  // Handle event deletion
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
   const handleDelete = async () => {
-    const confirmation = window.confirm(
-      "Are you sure you want to delete this event?"
-    );
-    if (!confirmation) return;
-
-    const loadingId = toast.loading("Deleting event, please wait...");
-
     try {
-      const response = await fetch(
-        `http://localhost:3000/events/${initialEvent.id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`http://localhost:3000/events/${eventId}`, {
+        method: "DELETE",
+      });
 
-      if (response.ok) {
-        toast.update(loadingId, {
-          render: "Event deleted successfully!",
-          type: "success",
-          isLoading: false,
-          autoClose: 3000,
-        });
-      } else {
-        const errorText = await response.text();
-        toast.update(loadingId, {
-          render: `Failed to delete event: ${errorText || response.statusText}`,
-          type: "error",
-          isLoading: false,
-          autoClose: 3000,
-        });
+      if (!response.ok) {
+        throw new Error("Failed to delete the event");
       }
-    } catch (error) {
-      toast.update(loadingId, {
-        render: "An error occurred while deleting the event.",
-        type: "error",
-        isLoading: false,
-        autoClose: 3000,
+
+      toast({
+        title: "Event deleted successfully!",
+        description: "Your event has been deleted.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      navigate("/"); // Redirect to the events page after deletion
+    } catch (err) {
+      toast({
+        title: "Error deleting event.",
+        description: err.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
       });
     }
   };
+
+  const createdByUser = users.find(
+    (user) => user.id === String(event?.createdBy)
+  );
+
+  if (loading) {
+    return (
+      <Center h="100vh">
+        <Spinner size="xl" />
+        <Text mt={4}>Loading event details...</Text>
+      </Center>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box textAlign="center" mt={6}>
+        <Text color="red.500">{`Error: ${error}`}</Text>
+      </Box>
+    );
+  }
 
   return (
     <Box
-      padding="8"
-      boxShadow="sm"
-      borderRadius="lg"
-      bg="white"
-      width="80%"
-      margin="auto"
+      maxW="600px"
+      mx="auto"
+      p={5}
+      fontFamily="'Press Start 2P', cursive"
+      border="1px solid #FFEB3B"
+      borderRadius="md"
     >
-      <Toaster />
-      <Text
-        fontSize="3xl"
-        fontWeight="bold"
-        mb="6"
-        textAlign="center"
-        color="gray.900"
-      >
+      <Heading as="h1" size="lg" mb={6} color="#FFEB3B" textAlign="center">
         Event Details
-      </Text>
+      </Heading>
 
-      <Box mb="6" boxShadow="md" borderRadius="md">
-        <Image
-          src={initialEvent.image}
-          alt={initialEvent.title}
-          borderRadius="md"
-          width="100%"
-        />
-      </Box>
+      {/* Conditional rendering for the link */}
+      <Link to="/events">
+        <Button variant="link" color="#FFEB3B" fontSize="xl" mt={6}>
+          Back to Events Page
+        </Button>
+      </Link>
 
-      <VStack align="flex-start" spacing={6} mb="6">
-        <Text fontSize="2xl" fontWeight="bold" color="gray.900">
-          {initialEvent.title}
-        </Text>
-        <Text fontSize="lg" color="gray.700">
-          {initialEvent.description}
-        </Text>
+      <VStack spacing={4} align="stretch">
+        <FormControl>
+          <FormLabel>Event Title</FormLabel>
+          <Text>{event.title}</Text>
+        </FormControl>
 
-        <SimpleGrid columns={2} spacing={6} w="full">
-          <HStack spacing={4} align="center">
-            <Avatar
-              size="sm"
-              src={
-                users.find((user) => user.id === String(initialEvent.createdBy))
-                  ?.image
-              }
-              name={
-                users.find((user) => user.id === String(initialEvent.createdBy))
-                  ?.name
-              }
-            />
-            <Text fontSize="md" color="gray.600">
-              Created by:{" "}
-              <strong>
-                {
-                  users.find(
-                    (user) => user.id === String(initialEvent.createdBy)
-                  )?.name
-                }
-              </strong>
-            </Text>
-          </HStack>
+        <FormControl>
+          <FormLabel>Event Description</FormLabel>
+          <Text>{event.description}</Text>
+        </FormControl>
 
-          <VStack align="flex-start" spacing={2}>
-            <Text fontSize="md" color="gray.600">
-              Location: <strong>{initialEvent.location}</strong>
-            </Text>
-            <Text fontSize="sm" color="gray.500">
-              Start Time:{" "}
-              <strong>
-                {new Date(initialEvent.startTime).toLocaleString()}
-              </strong>
-            </Text>
-            <Text fontSize="sm" color="gray.500">
-              End Time:{" "}
-              <strong>{new Date(initialEvent.endTime).toLocaleString()}</strong>
-            </Text>
-          </VStack>
-        </SimpleGrid>
+        <FormControl>
+          <FormLabel>Date and Time</FormLabel>
+          <Text>{event.dateTime}</Text>
+        </FormControl>
+
+        <FormControl>
+          <FormLabel>Categories</FormLabel>
+          <Text>
+            {categories
+              .filter((category) => event.categoryIds.includes(category.id))
+              .map((category) => category.name)
+              .join(", ")}
+          </Text>
+        </FormControl>
+
+        <Button
+          onClick={() => setIsModalOpen(true)}
+          size="lg"
+          mt={4}
+          {...pacmanButtonStyle}
+        >
+          Edit Details
+        </Button>
       </VStack>
-
-      <form onSubmit={handleSubmit}>
-        <VStack spacing={6} align="stretch">
-          <FormControl isRequired>
-            <FormLabel>Event Title</FormLabel>
-            <Input
-              type="text"
-              name="title"
-              value={editedEvent.title}
-              onChange={handleChange}
-              placeholder="Event Title"
-              borderRadius="md"
-              boxShadow="sm"
-            />
-          </FormControl>
-
-          <FormControl isRequired>
-            <FormLabel>Event Description</FormLabel>
-            <Textarea
-              name="description"
-              value={editedEvent.description}
-              onChange={handleChange}
-              placeholder="Event Description"
-              borderRadius="md"
-              boxShadow="sm"
-            />
-          </FormControl>
-
-          <FormControl isRequired>
-            <FormLabel>Start Time</FormLabel>
-            <Input
-              type="datetime-local"
-              name="startTime"
-              value={editedEvent.startTime}
-              onChange={handleChange}
-              borderRadius="md"
-              boxShadow="sm"
-            />
-          </FormControl>
-
-          <FormControl isRequired>
-            <FormLabel>End Time</FormLabel>
-            <Input
-              type="datetime-local"
-              name="endTime"
-              value={editedEvent.endTime}
-              onChange={handleChange}
-              borderRadius="md"
-              boxShadow="sm"
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel>Event Image URL</FormLabel>
-            <Input
-              type="text"
-              name="image"
-              value={editedEvent.image}
-              onChange={handleChange}
-              placeholder="Image URL"
-              borderRadius="md"
-              boxShadow="sm"
-            />
-            {editedEvent.image && (
-              <Image
-                src={editedEvent.image}
-                alt="Preview"
-                boxSize="200px"
-                mt="2"
-              />
-            )}
-          </FormControl>
-
-          <FormControl isRequired>
-            <FormLabel>Categories</FormLabel>
-            <Select
-              name="categoryIds"
-              multiple
-              value={editedEvent.categoryIds.map(String)} // Ensure correct value mapping
-              onChange={(e) =>
-                handleChange({
-                  target: {
-                    name: "categoryIds",
-                    value: Array.from(e.target.selectedOptions)
-                      .map((opt) => opt.value)
-                      .join(", "),
-                  },
-                })
-              }
-              borderRadius="md"
-              boxShadow="sm"
-            >
-              {categories.map((category) => (
-                <option key={category.id} value={String(category.id)}>
-                  {category.name}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-
-          <Button
-            type="submit"
-            colorScheme="blue"
-            width="full"
-            borderRadius="md"
-            boxShadow="md"
-          >
-            Save Changes
-          </Button>
-        </VStack>
-      </form>
 
       <Button
         onClick={handleDelete}
-        colorScheme="red"
-        width="full"
-        mt="6"
-        borderRadius="md"
-        boxShadow="md"
+        size="lg"
+        mt={4}
+        {...pacmanDeleteButtonStyle}
       >
         Delete Event
       </Button>
 
-      <Box mt="6">
-        <BackButton>View More Events</BackButton>
-      </Box>
+      {createdByUser && (
+        <HStack spacing={4} align="center" mt={6}>
+          <Avatar size="lg" src={createdByUser.image} />
+          <Box>
+            <Text fontWeight="bold" fontSize="lg" color="#FFEB3B">
+              Created by: {createdByUser.name}
+            </Text>
+          </Box>
+        </HStack>
+      )}
+
+      {/* Modal for editing */}
+      <Modal isOpen={isModalOpen} onClose={handleModalClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Event Details</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form onSubmit={(e) => e.preventDefault()}>
+              <FormControl isRequired>
+                <FormLabel>Event Title</FormLabel>
+                <Input
+                  value={modalTitle || ""}
+                  onChange={(e) => setModalTitle(e.target.value)}
+                  {...pacmanInputStyle}
+                />
+              </FormControl>
+
+              <FormControl isRequired>
+                <FormLabel>Event Description</FormLabel>
+                <Textarea
+                  value={modalDescription || ""}
+                  onChange={(e) => setModalDescription(e.target.value)}
+                  {...pacmanInputStyle}
+                />
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>Categories</FormLabel>
+                <CheckboxGroup
+                  value={modalCategoryIds || []}
+                  onChange={handleCategoryChange}
+                >
+                  <VStack align="start">
+                    {categories.map((category) => (
+                      <Checkbox
+                        key={category.id}
+                        value={String(category.id)}
+                        colorScheme="yellow"
+                      >
+                        {category.name}
+                      </Checkbox>
+                    ))}
+                  </VStack>
+                </CheckboxGroup>
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>Date and Time</FormLabel>
+                <Input
+                  type="datetime-local"
+                  value={modalDateTime || ""}
+                  onChange={(e) => setModalDateTime(e.target.value)}
+                  {...pacmanInputStyle}
+                />
+              </FormControl>
+
+              <ModalFooter>
+                <Button onClick={handleModalSave} {...pacmanButtonStyle}>
+                  Save Changes
+                </Button>
+                <Button onClick={handleModalClose} ml={3}>
+                  Cancel
+                </Button>
+              </ModalFooter>
+            </form>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

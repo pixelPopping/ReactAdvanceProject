@@ -1,3 +1,6 @@
+/// om de app te starten voer: json-server events.json uit in de stater map
+/// open een nieuwe terminal en voer in de map starter: npm run dev uit
+
 import { ChakraProvider } from "@chakra-ui/react";
 import React from "react";
 import ReactDOM from "react-dom/client";
