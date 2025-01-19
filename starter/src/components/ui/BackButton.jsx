@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const pacmanButtonStyle = {
   backgroundColor: "#FFEB3B", // Yellow (Pac-Man)
   borderRadius: "50%", // Circular button
-  color: "#000", // Black text
+  color: "#FFF", // White text color
   fontWeight: "bold",
   fontSize: "18px",
   padding: "12px 30px",
@@ -30,7 +30,8 @@ export const BackButton = ({ children }) => {
 
   return (
     <Button onClick={goBack} {...pacmanButtonStyle}>
-      {children}
+      {children || "Go back to events"}{" "}
+      {/* Default text if no children passed */}
     </Button>
   );
 };

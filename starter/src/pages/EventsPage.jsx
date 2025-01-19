@@ -22,6 +22,7 @@ import {
 } from "@chakra-ui/react";
 import { TextInput } from "../components/ui/TextInput";
 import Button from "../components/ui/Button";
+import EventCard from "../components/EventCard";
 
 // Loader for initial data fetching
 export const loader = async () => {
@@ -156,6 +157,24 @@ export const EventsPage = () => {
 
   const handleAddEventSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if required fields are filled before submitting
+    if (
+      !newEventData.title ||
+      !newEventData.description ||
+      !newEventData.date ||
+      !newEventData.time
+    ) {
+      toast({
+        title: "Error",
+        description: "Please fill all required fields.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:3000/events", {
         method: "POST",
@@ -264,85 +283,11 @@ export const EventsPage = () => {
               .filter(Boolean);
 
             return (
-              <Box
+              <EventCard
                 key={event.id}
-                bg="gray.900"
-                border="2px solid"
-                borderColor="yellow.400"
-                padding={8}
-                borderRadius="md"
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                maxWidth="400px"
-                mx="auto"
-                _hover={{
-                  transform: "scale(1.05)",
-                  transition: "0.3s ease-in-out",
-                  bg: "yellow.500",
-                  boxShadow: "0 0 15px rgba(255, 204, 0, 0.8)",
-                }}
-              >
-                {/* Link to Event Details */}
-                <Link to={`/event/${event.id}`}>
-                  {/* Event Image */}
-                  <Box
-                    width="100%"
-                    height="200px"
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    mb={4}
-                    overflow="hidden"
-                    borderRadius="md"
-                  >
-                    {event.image ? (
-                      <img
-                        src={event.image}
-                        alt={event.title}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      <Text color="gray.300">No Image Available</Text>
-                    )}
-                  </Box>
-
-                  <Heading as="h2" size="sm" color="white" noOfLines={2}>
-                    {event.title}
-                  </Heading>
-                </Link>
-                <Text mt={2} fontSize="sm" color="gray.300" noOfLines={3}>
-                  {event.description}
-                </Text>
-
-                {/* Event Categories */}
-                <Box mt={4} textAlign="center">
-                  <Heading as="h3" size="xs" color="yellow.300">
-                    Categories:
-                  </Heading>
-                  <Flex flexWrap="wrap" mt={2} justify="center">
-                    {eventCategories.map((category) => (
-                      <Box
-                        key={category.id}
-                        bg="yellow.400"
-                        borderRadius="full"
-                        px={3}
-                        py={1}
-                        m={1}
-                        fontSize="xs"
-                        color="black"
-                      >
-                        {category.name}
-                      </Box>
-                    ))}
-                  </Flex>
-                </Box>
-              </Box>
+                event={event}
+                categories={eventCategories}
+              />
             );
           })}
         </Box>
@@ -363,89 +308,108 @@ export const EventsPage = () => {
         </ChakraButton>
       </Flex>
 
-      {/* Modal to Add New Event */}
+      {/* Modal to Add Event */}
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Add New Event</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <form onSubmit={handleAddEventSubmit}>
-              <FormControl id="title" mb={4} isRequired>
-                <FormLabel>Event Title</FormLabel>
-                <Input
-                  type="text"
-                  name="title"
-                  value={newEventData.title}
-                  onChange={handleInputChange}
-                  placeholder="Enter event title"
-                />
-              </FormControl>
-              <FormControl id="description" mb={4} isRequired>
-                <FormLabel>Event Description</FormLabel>
-                <Input
-                  type="text"
-                  name="description"
-                  value={newEventData.description}
-                  onChange={handleInputChange}
-                  placeholder="Enter event description"
-                />
-              </FormControl>
-              <FormControl id="date" mb={4} isRequired>
-                <FormLabel>Event Date</FormLabel>
-                <Input
-                  type="date"
-                  name="date"
-                  value={newEventData.date}
-                  onChange={handleInputChange}
-                  placeholder="Select event date"
-                />
-              </FormControl>
-              <FormControl id="time" mb={4} isRequired>
-                <FormLabel>Event Time</FormLabel>
-                <Input
-                  type="time"
-                  name="time"
-                  value={newEventData.time}
-                  onChange={handleInputChange}
-                  placeholder="Select event time"
-                />
-              </FormControl>
-              <FormControl id="categories" mb={4} isRequired>
-                <FormLabel>Select Categories</FormLabel>
-                <Select
-                  name="categoryIds"
-                  multiple
-                  value={newEventData.categoryIds}
-                  onChange={handleCategorySelect}
-                  placeholder="Select categories"
-                >
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </Select>
-              </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Event Title</FormLabel>
+              <Input
+                name="title"
+                value={newEventData.title}
+                onChange={handleInputChange}
+                placeholder="Enter event title"
+                mb={4}
+                bg="gray.700"
+                color="white"
+              />
+            </FormControl>
 
-              <ModalFooter>
-                <ChakraButton
-                  variant="outline"
-                  mr={3}
-                  onClick={handleCloseModal}
-                >
-                  Cancel
-                </ChakraButton>
-                <ChakraButton colorScheme="yellow" type="submit">
-                  Add Event
-                </ChakraButton>
-              </ModalFooter>
-            </form>
+            <FormControl isRequired>
+              <FormLabel>Event Description</FormLabel>
+              <Input
+                name="description"
+                value={newEventData.description}
+                onChange={handleInputChange}
+                placeholder="Enter event description"
+                mb={4}
+                bg="gray.700"
+                color="white"
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Event Image URL</FormLabel>
+              <Input
+                name="image"
+                value={newEventData.image}
+                onChange={handleInputChange}
+                placeholder="Enter event image URL"
+                mb={4}
+                bg="gray.700"
+                color="white"
+              />
+            </FormControl>
+
+            <FormControl isRequired>
+              <FormLabel>Event Categories</FormLabel>
+              <Select
+                value={newEventData.categoryIds}
+                onChange={handleCategorySelect}
+                multiple
+                mb={4}
+                bg="gray.700"
+                color="white"
+              >
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControl isRequired>
+              <FormLabel>Event Date</FormLabel>
+              <Input
+                name="date"
+                type="date"
+                value={newEventData.date}
+                onChange={handleInputChange}
+                mb={4}
+                bg="gray.700"
+                color="white"
+              />
+            </FormControl>
+
+            <FormControl isRequired>
+              <FormLabel>Event Time</FormLabel>
+              <Input
+                name="time"
+                type="time"
+                value={newEventData.time}
+                onChange={handleInputChange}
+                mb={4}
+                bg="gray.700"
+                color="white"
+              />
+            </FormControl>
           </ModalBody>
+
+          <ModalFooter>
+            <ChakraButton
+              colorScheme="yellow"
+              onClick={handleAddEventSubmit}
+              isLoading={loading}
+            >
+              Add Event
+            </ChakraButton>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </Box>
   );
 };
-
-export default EventsPage;

@@ -1,368 +1,80 @@
-import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Textarea,
-  VStack,
-  Heading,
-  useToast,
-  Checkbox,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-} from "@chakra-ui/react";
+import React from "react";
+import { Box, Heading, Text, Image } from "@chakra-ui/react";
+
+// Placeholder for fetching data (users, events, and categories)
+const users = []; // Your array of users will go here
+const events = []; // Your array of events will go here
+const categories = []; // Your array of categories will go here
+
+// Simulate the logged-in user (you can replace this logic with your actual login logic)
+const loggedInUserId = ""; // Replace with actual logged-in user ID
 
 export const FormPage = () => {
-  const [events, setEvents] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [newEvent, setNewEvent] = useState({
-    title: "",
-    description: "",
-    startTime: "",
-    endTime: "",
-    image: "",
-    categoryIds: [],
-    createdBy: 3, // Assuming logged-in user ID is 3
+  // Find the event you want to display (you can fetch a specific event from the events array)
+  const event = events[0]; // Replace this with logic to fetch the specific event
+
+  // Find the user who created the event
+  const createdByUser = users.find(
+    (user) => user.id === String(event.createdBy)
+  ); // Convert createdBy to string for comparison
+
+  // Get category names based on categoryIds
+  const eventCategories = event.categoryIds.map((id) => {
+    const category = categories.find((cat) => cat.id === id);
+    return category ? category.name : "Unknown category";
   });
-  const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // Fetch events from API
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/events");
-        const events = await response.json();
-        setEvents(events);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-    fetchEvents();
-  }, []);
+  // Check if the logged-in user is the creator of the event
+  const isCreator = loggedInUserId === String(event.createdBy); // Ensure both sides are strings
 
-  // Fetch categories from API
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/categories");
-        const categoriesData = await response.json();
-        setCategories(categoriesData);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-    fetchCategories();
-  }, []);
-
-  // Handle form input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewEvent({
-      ...newEvent,
-      [name]: value,
-    });
-  };
-
-  // Handle category checkbox change
-  const handleCategoryChange = (e) => {
-    const { value, checked } = e.target;
-    const categoryId = Number(value);
-
-    setNewEvent((prevEvent) => {
-      let updatedCategoryIds = [...prevEvent.categoryIds];
-
-      if (checked) {
-        updatedCategoryIds.push(categoryId);
-      } else {
-        updatedCategoryIds = updatedCategoryIds.filter(
-          (id) => id !== categoryId
-        );
-      }
-
-      return { ...prevEvent, categoryIds: updatedCategoryIds };
-    });
-  };
-
-  // Show success toast
-  const showSuccessToast = () => {
-    toast({
-      position: "top",
-      render: () => (
-        <Box
-          bg="yellow.400"
-          color="black"
-          p={4}
-          borderRadius="md"
-          boxShadow="lg"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          animation="slideInDown 1s ease-out"
-        >
-          <img
-            src="https://media.giphy.com/media/l3vR1t6I4vbe9tO7q/giphy.gif"
-            alt="Pacman"
-            width={40}
-            height={40}
-            style={{ marginRight: "15px" }}
-          />
-          <span style={{ fontWeight: "bold", fontSize: "18px" }}>
-            Event Created Successfully!
-          </span>
-        </Box>
-      ),
-      duration: 3000,
-      isClosable: true,
-    });
-  };
-
-  // Handle form submission to create a new event
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validate start and end time
-    const start = new Date(newEvent.startTime);
-    const end = new Date(newEvent.endTime);
-
-    if (start >= end) {
-      toast({
-        title: "Invalid Time",
-        description: "Start time must be earlier than end time.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-      return;
-    }
-
-    const eventToCreate = {
-      ...newEvent,
-      categoryIds: newEvent.categoryIds,
-    };
-
-    try {
-      const response = await fetch("http://localhost:3000/events", {
-        method: "POST",
-        body: JSON.stringify(eventToCreate),
-        headers: { "Content-Type": "application/json;charset=utf-8" },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create event");
-      }
-
-      const createdEvent = await response.json();
-      setEvents((prevEvents) => [...prevEvents, createdEvent]);
-
-      showSuccessToast();
-
-      // Reset form after submission
-      setNewEvent({
-        title: "",
-        description: "",
-        startTime: "",
-        endTime: "",
-        image: "",
-        categoryIds: [],
-        createdBy: 3,
-      });
-
-      // Close the modal
-      onClose();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "There was an error creating the event.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  };
+  // Find the logged-in user details
+  const loggedInUser = users.find((user) => user.id === loggedInUserId);
 
   return (
-    <Box
-      p={5}
-      bg="yellow.300"
-      borderRadius="xl"
-      maxW="lg"
-      mx="auto"
-      boxShadow="xl"
-      minH="100vh"
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-    >
-      <Heading
-        mb={5}
-        size="lg"
-        textAlign="center"
-        color="yellow.700"
-        fontFamily="Pacifico, sans-serif"
-      >
-        Create a New Event
-      </Heading>
+    <Box p={5}>
+      <Heading as="h2">{event.title}</Heading>
+      <Text fontSize="md" mt={2}>
+        {event.description}
+      </Text>
 
-      <Button colorScheme="yellow" onClick={onOpen}>
-        Open Event Form
-      </Button>
+      <Box mt={4}>
+        <Text fontWeight="bold">Created by:</Text>
+        <Box display="flex" alignItems="center">
+          {/* If the logged-in user is the creator, display their info */}
+          <Image
+            src={isCreator ? loggedInUser?.image : createdByUser?.image}
+            alt={isCreator ? loggedInUser?.name : createdByUser?.name}
+            boxSize="40px"
+            borderRadius="full"
+            mr={2}
+          />
+          <Text>{isCreator ? loggedInUser?.name : createdByUser?.name}</Text>
+        </Box>
+      </Box>
 
-      {/* Modal to create event */}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create New Event</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <form onSubmit={handleSubmit}>
-              <VStack spacing={6} align="stretch">
-                {/* Event Title */}
-                <FormControl id="title" isRequired>
-                  <FormLabel color="yellow.800" fontWeight="bold">
-                    Event Title
-                  </FormLabel>
-                  <Input
-                    type="text"
-                    name="title"
-                    value={newEvent.title}
-                    onChange={handleChange}
-                    placeholder="Enter event title"
-                    borderColor="yellow.400"
-                    _hover={{ borderColor: "yellow.500" }}
-                    bg="yellow.100"
-                    fontWeight="bold"
-                    borderRadius="xl"
-                    fontSize="lg"
-                  />
-                </FormControl>
+      <Box mt={4}>
+        <Text fontWeight="bold">Categories:</Text>
+        <Text>{eventCategories.join(", ")}</Text>
+      </Box>
 
-                {/* Event Description */}
-                <FormControl id="description" isRequired>
-                  <FormLabel color="yellow.800" fontWeight="bold">
-                    Event Description
-                  </FormLabel>
-                  <Textarea
-                    name="description"
-                    value={newEvent.description}
-                    onChange={handleChange}
-                    placeholder="Enter event description"
-                    size="md"
-                    borderColor="yellow.400"
-                    _hover={{ borderColor: "yellow.500" }}
-                    bg="yellow.100"
-                    fontWeight="bold"
-                    borderRadius="xl"
-                    fontSize="lg"
-                  />
-                </FormControl>
+      <Box mt={4}>
+        <Text fontWeight="bold">Location:</Text>
+        <Text>{event.location}</Text>
+      </Box>
 
-                {/* Event Start Time */}
-                <FormControl id="startTime" isRequired>
-                  <FormLabel color="yellow.800" fontWeight="bold">
-                    Start Time
-                  </FormLabel>
-                  <Input
-                    type="datetime-local"
-                    name="startTime"
-                    value={newEvent.startTime}
-                    onChange={handleChange}
-                    borderColor="yellow.400"
-                    _hover={{ borderColor: "yellow.500" }}
-                    bg="yellow.100"
-                    fontWeight="bold"
-                    borderRadius="xl"
-                    fontSize="lg"
-                  />
-                </FormControl>
+      <Box mt={4}>
+        <Text fontWeight="bold">Event Time:</Text>
+        <Text>
+          {new Date(event.startTime).toLocaleString()} to{" "}
+          {new Date(event.endTime).toLocaleString()}
+        </Text>
+      </Box>
 
-                {/* Event End Time */}
-                <FormControl id="endTime" isRequired>
-                  <FormLabel color="yellow.800" fontWeight="bold">
-                    End Time
-                  </FormLabel>
-                  <Input
-                    type="datetime-local"
-                    name="endTime"
-                    value={newEvent.endTime}
-                    onChange={handleChange}
-                    borderColor="yellow.400"
-                    _hover={{ borderColor: "yellow.500" }}
-                    bg="yellow.100"
-                    fontWeight="bold"
-                    borderRadius="xl"
-                    fontSize="lg"
-                  />
-                </FormControl>
-
-                {/* Category Checkboxes */}
-                <FormControl id="categoryIds" isRequired>
-                  <FormLabel color="yellow.800" fontWeight="bold">
-                    Select Categories
-                  </FormLabel>
-                  <VStack align="start">
-                    {categories.map((category) => (
-                      <Checkbox
-                        key={category.id}
-                        value={category.id}
-                        isChecked={newEvent.categoryIds.includes(category.id)}
-                        onChange={handleCategoryChange}
-                        colorScheme="yellow"
-                      >
-                        {category.name}
-                      </Checkbox>
-                    ))}
-                  </VStack>
-                </FormControl>
-
-                <ModalFooter>
-                  <Button colorScheme="yellow" type="submit">
-                    Create Event
-                  </Button>
-                </ModalFooter>
-              </VStack>
-            </form>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-
-      <Heading
-        size="md"
-        mt={10}
-        color="yellow.700"
-        fontFamily="Pacifico, sans-serif"
-      >
-        Events List
-      </Heading>
-
-      <VStack mt={4} spacing={4} align="stretch">
-        {events.map((event) => (
-          <Button
-            key={event.id}
-            variant="outline"
-            colorScheme="yellow"
-            width="full"
-            fontWeight="bold"
-            boxShadow="md"
-            borderRadius="xl"
-            _hover={{
-              bg: "yellow.400",
-              color: "white",
-            }}
-          >
-            {event.title}
-          </Button>
-        ))}
-      </VStack>
+      {event.image && (
+        <Box mt={4}>
+          <Image src={event.image} alt={event.title} maxWidth="100%" />
+        </Box>
+      )}
     </Box>
   );
 };

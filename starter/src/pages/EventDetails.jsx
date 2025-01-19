@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
+  Checkbox,
+  CheckboxGroup,
   Box,
   Heading,
   Input,
@@ -14,8 +16,6 @@ import {
   Avatar,
   Spinner,
   Center,
-  CheckboxGroup,
-  Checkbox,
   Text,
   Modal,
   ModalOverlay,
@@ -25,6 +25,8 @@ import {
   ModalBody,
   ModalFooter,
 } from "@chakra-ui/react";
+import BackButton from "../components/ui/BackButton";
+import DeleteToast from "../components/ui/DeleteToast"; // Import DeleteToast component
 
 const pacmanButtonStyle = {
   backgroundColor: "#FFEB3B",
@@ -92,16 +94,15 @@ export const EventDetails = () => {
   const [users, setUsers] = useState([]);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for the Edit Modal
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for Delete Confirmation Modal
+  const [deleteToastData, setDeleteToastData] = useState(null); // For triggering DeleteToast
   const [error, setError] = useState(null);
-  const [initialData, setInitialData] = useState(null);
 
   const [modalTitle, setModalTitle] = useState("");
   const [modalDescription, setModalDescription] = useState("");
   const [modalCategoryIds, setModalCategoryIds] = useState([]);
   const [modalDateTime, setModalDateTime] = useState("");
-
-  const location = useLocation(); // Used for conditional rendering of the link
 
   useEffect(() => {
     const fetchEventData = async () => {
@@ -131,7 +132,6 @@ export const EventDetails = () => {
         setCategories(categoriesData);
         setUsers(usersData);
         setSelectedCategoryIds(normalizedEvent.categoryIds);
-        setInitialData(normalizedEvent);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -142,20 +142,7 @@ export const EventDetails = () => {
     fetchEventData();
   }, [eventId]);
 
-  useEffect(() => {
-    if (isModalOpen && initialData) {
-      setModalTitle(initialData.title);
-      setModalDescription(initialData.description);
-      setModalCategoryIds(initialData.categoryIds);
-      setModalDateTime(initialData.dateTime);
-    }
-  }, [isModalOpen, initialData]);
-
-  const handleCategoryChange = (selectedValues) => {
-    setModalCategoryIds(selectedValues);
-  };
-
-  const handleModalSave = async () => {
+  const handleEditModalSave = async () => {
     const updatedEvent = {
       ...event,
       title: modalTitle,
@@ -188,7 +175,7 @@ export const EventDetails = () => {
         isClosable: true,
       });
 
-      setIsModalOpen(false); // Close the modal after saving
+      setIsModalOpen(false); // Close edit modal
     } catch (err) {
       toast({
         title: "Error updating event.",
@@ -198,10 +185,6 @@ export const EventDetails = () => {
         isClosable: true,
       });
     }
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
   };
 
   const handleDelete = async () => {
@@ -214,22 +197,18 @@ export const EventDetails = () => {
         throw new Error("Failed to delete the event");
       }
 
-      toast({
-        title: "Event deleted successfully!",
-        description: "Your event has been deleted.",
+      setDeleteToastData({
         status: "success",
-        duration: 3000,
-        isClosable: true,
+        message: "Event deleted successfully!",
+        description: "Your event has been successfully deleted.",
       });
 
       navigate("/"); // Redirect to the events page after deletion
     } catch (err) {
-      toast({
-        title: "Error deleting event.",
-        description: err.message,
+      setDeleteToastData({
         status: "error",
-        duration: 3000,
-        isClosable: true,
+        message: "Error deleting event",
+        description: err.message,
       });
     }
   };
@@ -267,18 +246,14 @@ export const EventDetails = () => {
       <Heading as="h1" size="lg" mb={6} color="#FFEB3B" textAlign="center">
         Event Details
       </Heading>
-
-      {/* Conditional rendering for the link */}
-      <Link to="/events">
-        <Button variant="link" color="#FFEB3B" fontSize="xl" mt={6}>
-          Back to Events Page
-        </Button>
-      </Link>
-
+      <BackButton to="/events" />
       <VStack spacing={4} align="stretch">
         <FormControl>
           <FormLabel>Event Title</FormLabel>
           <Text>{event.title}</Text>
+        </FormControl>
+        <FormControl>
+          <img src={event.image}></img>
         </FormControl>
 
         <FormControl>
@@ -302,7 +277,13 @@ export const EventDetails = () => {
         </FormControl>
 
         <Button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setIsModalOpen(true);
+            setModalTitle(event.title);
+            setModalDescription(event.description);
+            setModalCategoryIds(event.categoryIds);
+            setModalDateTime(event.dateTime);
+          }}
           size="lg"
           mt={4}
           {...pacmanButtonStyle}
@@ -312,7 +293,7 @@ export const EventDetails = () => {
       </VStack>
 
       <Button
-        onClick={handleDelete}
+        onClick={() => setIsDeleteModalOpen(true)} // Open delete confirmation modal
         size="lg"
         mt={4}
         {...pacmanDeleteButtonStyle}
@@ -331,74 +312,104 @@ export const EventDetails = () => {
         </HStack>
       )}
 
-      {/* Modal for editing */}
-      <Modal isOpen={isModalOpen} onClose={handleModalClose}>
+      {/* Edit Event Modal */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Edit Event Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <form onSubmit={(e) => e.preventDefault()}>
-              <FormControl isRequired>
-                <FormLabel>Event Title</FormLabel>
-                <Input
-                  value={modalTitle || ""}
-                  onChange={(e) => setModalTitle(e.target.value)}
-                  {...pacmanInputStyle}
-                />
-              </FormControl>
+            <FormControl>
+              <FormLabel>Title</FormLabel>
+              <Input
+                value={modalTitle}
+                onChange={(e) => setModalTitle(e.target.value)}
+              />
+            </FormControl>
 
-              <FormControl isRequired>
-                <FormLabel>Event Description</FormLabel>
-                <Textarea
-                  value={modalDescription || ""}
-                  onChange={(e) => setModalDescription(e.target.value)}
-                  {...pacmanInputStyle}
-                />
-              </FormControl>
+            <FormControl mt={4}>
+              <FormLabel>Description</FormLabel>
+              <Textarea
+                value={modalDescription}
+                onChange={(e) => setModalDescription(e.target.value)}
+              />
+            </FormControl>
 
-              <FormControl>
-                <FormLabel>Categories</FormLabel>
-                <CheckboxGroup
-                  value={modalCategoryIds || []}
-                  onChange={handleCategoryChange}
-                >
-                  <VStack align="start">
-                    {categories.map((category) => (
-                      <Checkbox
-                        key={category.id}
-                        value={String(category.id)}
-                        colorScheme="yellow"
-                      >
-                        {category.name}
-                      </Checkbox>
-                    ))}
-                  </VStack>
-                </CheckboxGroup>
-              </FormControl>
+            <FormControl mt={4}>
+              <FormLabel>Date and Time</FormLabel>
+              <Input
+                type="datetime-local"
+                value={modalDateTime}
+                onChange={(e) => setModalDateTime(e.target.value)}
+              />
+            </FormControl>
 
-              <FormControl>
-                <FormLabel>Date and Time</FormLabel>
-                <Input
-                  type="datetime-local"
-                  value={modalDateTime || ""}
-                  onChange={(e) => setModalDateTime(e.target.value)}
-                  {...pacmanInputStyle}
-                />
-              </FormControl>
-
-              <ModalFooter>
-                <Button onClick={handleModalSave} {...pacmanButtonStyle}>
-                  Save Changes
-                </Button>
-                <Button onClick={handleModalClose} ml={3}>
-                  Cancel
-                </Button>
-              </ModalFooter>
-            </form>
+            <FormControl mt={4}>
+              <FormLabel>Categories</FormLabel>
+              <CheckboxGroup
+                value={modalCategoryIds}
+                onChange={setModalCategoryIds}
+              >
+                <HStack spacing={4}>
+                  {categories.map((category) => (
+                    <Checkbox key={category.id} value={category.id}>
+                      {category.name}
+                    </Checkbox>
+                  ))}
+                </HStack>
+              </CheckboxGroup>
+            </FormControl>
           </ModalBody>
+
+          <ModalFooter>
+            <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button colorScheme="yellow" onClick={handleEditModalSave}>
+              Save Changes
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Confirm Deletion</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>Are you 100% sure you want to delete this event?</Text>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>
+              No
+            </Button>
+            <Button
+              colorScheme="red"
+              onClick={() => {
+                handleDelete();
+                setIsDeleteModalOpen(false);
+              }}
+            >
+              Yes, Delete
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* Render DeleteToast if deleteToastData is set */}
+      {deleteToastData && (
+        <DeleteToast
+          status={deleteToastData.status}
+          message={deleteToastData.message}
+          description={deleteToastData.description}
+        />
+      )}
     </Box>
   );
 };
