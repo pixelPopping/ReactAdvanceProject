@@ -1,0 +1,55 @@
+/* Base styles for the toast */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px;
+  border-radius: 5px;
+  color: white;
+  font-family: Arial, sans-serif;
+  z-index: 1000;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast.success {
+  background-color: #38a169; /* Green for success */
+}
+
+.toast.error {
+  background-color: #e53e3e; /* Red for error */
+}
+
+.toast.warning {
+  background-color: #dd6b20; /* Orange for warning */
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Optional: Adding a little delay effect for smooth appearance */
+.toast-enter {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.toast-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.toast-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s, transform 0.3s;
+}

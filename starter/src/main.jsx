@@ -1,48 +1,52 @@
-/// om de app te starten voer: json-server events.json uit in de stater map
-/// open een nieuwe terminal en voer in de map starter: npm run dev uit
-
-import { ChakraProvider } from "@chakra-ui/react";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { EventsPage } from "./pages/EventsPage";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Root } from "./components/Root";
-import { FormPage } from "./pages/FormPage";
-import { loader } from "./pages/EventsPage";
-
+import { createBrowserRouter, RouterProvider } from "react-router-dom"; // React Router for routing
+import { EventsPage } from "./pages/EventsPage"; // Events page component
+import { Root } from "./components/Root"; // Root component (common layout or structure)
+import { FormPage } from "./pages/FormPage"; // Form page component for adding/editing events
 import EventDetails, {
   loader as eventDetailsLoader,
-} from "./pages/EventDetails";
+} from "./pages/EventDetails"; // Event details page with loader for specific event
+import { loader as eventsPageLoader } from "./pages/EventsPage"; // Loader for events data
+import { ChakraProvider } from "@chakra-ui/react"; // Corrected ChakraProvider import
 
+// Create the router with routes
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Root />,
+    path: "/", // Root path
+    element: <Root />, // Root component for common layout or navigation
     children: [
       {
-        path: "/",
-        element: <EventsPage />,
-        loader: loader,
+        path: "/", // Default path for events page
+        element: <EventsPage />, // Events page component
+        loader: eventsPageLoader, // Load events data for the EventsPage
       },
       {
-        path: "/event/:eventId",
-        element: <EventDetails />,
-        loader: eventDetailsLoader,
-
-        // action: addComment,
+        path: "/event/:eventId", // Dynamic route for event details
+        element: <EventDetails />, // Event details component
+        loader: eventDetailsLoader, // Loader for fetching specific event details
       },
       {
-        path: "/FormPage",
-        element: <FormPage />,
+        path: "/FormPage", // Path for the form to add or edit events
+        element: <FormPage />, // FormPage component
       },
     ],
+    errorElement: (
+      <div>
+        <h2>Page Not Found</h2>
+        <p>The page you are looking for does not exist.</p>
+      </div>
+    ), // Error message for unhandled routes
   },
 ]);
-// @ts-ignore
+
+// Render the app to the root element
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <ChakraProvider>
-      <RouterProvider router={router} />
-    </ChakraProvider>
-  </React.StrictMode>
+  <ChakraProvider>
+    {/* Wrap the app with ChakraProvider for styling and components */}
+    <React.StrictMode>
+      <RouterProvider router={router} />{" "}
+      {/* Provide the router configuration to the app */}
+    </React.StrictMode>
+  </ChakraProvider>
 );

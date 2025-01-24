@@ -27,3 +27,5 @@ export const TextInput = ({ id, value, changeFn, placeholder }) => (
     />
   </Box>
 );
+
+export default TextInput;

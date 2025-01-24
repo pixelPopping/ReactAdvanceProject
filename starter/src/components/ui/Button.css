@@ -1,0 +1,26 @@
+.add-event-btn {
+  background-color: #38b2ac; /* Chakra UI's teal color for clean look */
+  color: white; /* White text for contrast */
+  font-size: 1.125rem; /* Slightly larger font size */
+  font-weight: 600; /* Semi-bold text */
+  padding: 12px 24px; /* Padding for the button size */
+  border-radius: 8px; /* Rounded corners for a modern look */
+  border: none; /* Remove default border */
+  cursor: pointer; /* Pointer cursor to show it's clickable */
+  transition: all 0.3s ease; /* Smooth transition on hover/click */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.add-event-btn:hover {
+  background-color: #319795; /* Slightly darker color on hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Slightly bigger shadow on hover */
+}
+
+.add-event-btn:active {
+  background-color: #2c7a7b; /* Darker shade on click */
+}
+
+.add-event-btn:focus {
+  outline: none; /* Remove default focus outline */
+  box-shadow: 0 0 0 3px rgba(56, 178, 172, 0.6); /* Custom focus outline for accessibility */
+}

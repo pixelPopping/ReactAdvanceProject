@@ -1,28 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useLoaderData, useLocation, Link } from "react-router-dom";
-import {
-  Box,
-  Heading,
-  Text,
-  Spinner,
-  Flex,
-  useToast,
-  Select,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Button as ChakraButton,
-  FormControl,
-  FormLabel,
-  Input,
-} from "@chakra-ui/react";
+import { useLoaderData, useLocation } from "react-router-dom";
 import { TextInput } from "../components/ui/TextInput";
 import Button from "../components/ui/Button";
 import EventCard from "../components/EventCard";
+import "./EventsPage.css";
 
 // Loader for initial data fetching
 export const loader = async () => {
@@ -43,7 +24,6 @@ export const EventsPage = () => {
   const { events: initialEvents, categories: initialCategories } =
     useLoaderData();
   const location = useLocation();
-  const toast = useToast();
 
   const [events, setEvents] = useState(initialEvents);
   const [categories, setCategories] = useState(initialCategories);
@@ -80,22 +60,8 @@ export const EventsPage = () => {
 
       setEvents(eventsData);
       setCategories(categoriesData);
-
-      toast({
-        title: "Data Loaded!",
-        description: "Events and categories have been successfully loaded.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to load events or categories.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      console.error("Failed to load data:", error);
     } finally {
       setLoading(false);
     }
@@ -158,20 +124,13 @@ export const EventsPage = () => {
   const handleAddEventSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if required fields are filled before submitting
     if (
       !newEventData.title ||
       !newEventData.description ||
       !newEventData.date ||
       !newEventData.time
     ) {
-      toast({
-        title: "Error",
-        description: "Please fill all required fields.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      alert("Please fill all required fields.");
       return;
     }
 
@@ -190,13 +149,6 @@ export const EventsPage = () => {
 
       const addedEvent = await response.json();
       setEvents((prevEvents) => [...prevEvents, addedEvent]);
-      toast({
-        title: "Event Added!",
-        description: "New event has been successfully added.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
 
       setNewEventData({
         title: "",
@@ -208,42 +160,26 @@ export const EventsPage = () => {
       });
       handleCloseModal();
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add event.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      console.error("Failed to add event:", error);
     }
   };
 
   return (
-    <Box bg="black" color="white" minHeight="100vh" padding={5}>
-      <Heading as="h1" size="xl" mb={6} textAlign="center" color="yellow.400">
-        Pac-Man Style Events
-      </Heading>
+    <div className="events-page">
+      <h1 className="heading">Pac-Man Style Events</h1>
 
-      <Flex direction="column" align="stretch" mb={6}>
-        {/* Search Input */}
-        <TextInput
+      <div className="filters">
+        <input
+          type="text"
+          className="search-input"
           value={searchQuery}
-          changeFn={handleSearchChange}
+          onChange={handleSearchChange}
           placeholder="Search for events..."
-          bg="black"
-          borderColor="white"
-          focusBorderColor="yellow.400"
-          color="white"
         />
-
-        {/* Categories Dropdown */}
-        <Select
+        <select
+          className="category-select"
           value={selectedCategory}
           onChange={handleCategoryChange}
-          bg="black"
-          borderColor="white"
-          focusBorderColor="yellow.400"
-          color="white"
         >
           <option value="">All Categories</option>
           {categories.map((category) => (
@@ -251,24 +187,17 @@ export const EventsPage = () => {
               {category.name}
             </option>
           ))}
-        </Select>
-      </Flex>
+        </select>
+      </div>
 
-      {/* Display Loading Spinner while fetching data */}
       {loading ? (
-        <Flex justify="center" align="center" height="50vh">
-          <Spinner size="xl" color="yellow.400" />
-        </Flex>
+        <p>Loading...</p>
       ) : filteredEvents.length === 0 ? (
-        <Text textAlign="center" color="white">
+        <p className="no-events">
           No events found. Try adjusting your search or category filter.
-        </Text>
+        </p>
       ) : (
-        <Box
-          display="grid"
-          gridTemplateColumns="repeat(auto-fit, minmax(300px, 1fr))"
-          gap={6}
-        >
+        <div className="events-list">
           {filteredEvents.map((event) => {
             const categoryIds = Array.isArray(event.categoryIds)
               ? event.categoryIds
@@ -290,126 +219,78 @@ export const EventsPage = () => {
               />
             );
           })}
-        </Box>
+        </div>
       )}
 
-      {/* Button to Open Modal */}
-      <Flex justify="center" mt={6}>
-        <ChakraButton
-          colorScheme="yellow"
-          size="lg"
-          onClick={handleOpenModal}
-          _hover={{
-            bg: "yellow.600",
-            color: "black",
-          }}
-        >
-          Add Event
-        </ChakraButton>
-      </Flex>
+      <button className="add-event-btn" onClick={handleOpenModal}>
+        Add Event
+      </button>
 
-      {/* Modal to Add Event */}
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add New Event</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl isRequired>
-              <FormLabel>Event Title</FormLabel>
-              <Input
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close-modal" onClick={handleCloseModal}>
+              &times;
+            </span>
+            <form onSubmit={handleAddEventSubmit}>
+              <label>Event Title</label>
+              <input
                 name="title"
                 value={newEventData.title}
                 onChange={handleInputChange}
                 placeholder="Enter event title"
-                mb={4}
-                bg="gray.700"
-                color="white"
               />
-            </FormControl>
 
-            <FormControl isRequired>
-              <FormLabel>Event Description</FormLabel>
-              <Input
+              <label>Event Description</label>
+              <input
                 name="description"
                 value={newEventData.description}
                 onChange={handleInputChange}
                 placeholder="Enter event description"
-                mb={4}
-                bg="gray.700"
-                color="white"
               />
-            </FormControl>
 
-            <FormControl>
-              <FormLabel>Event Image URL</FormLabel>
-              <Input
+              <label>Event Image URL</label>
+              <input
                 name="image"
                 value={newEventData.image}
                 onChange={handleInputChange}
                 placeholder="Enter event image URL"
-                mb={4}
-                bg="gray.700"
-                color="white"
               />
-            </FormControl>
 
-            <FormControl isRequired>
-              <FormLabel>Event Categories</FormLabel>
-              <Select
+              <label>Event Categories</label>
+              <select
                 value={newEventData.categoryIds}
                 onChange={handleCategorySelect}
                 multiple
-                mb={4}
-                bg="gray.700"
-                color="white"
               >
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
                   </option>
                 ))}
-              </Select>
-            </FormControl>
+              </select>
 
-            <FormControl isRequired>
-              <FormLabel>Event Date</FormLabel>
-              <Input
+              <label>Event Date</label>
+              <input
                 name="date"
                 type="date"
                 value={newEventData.date}
                 onChange={handleInputChange}
-                mb={4}
-                bg="gray.700"
-                color="white"
               />
-            </FormControl>
 
-            <FormControl isRequired>
-              <FormLabel>Event Time</FormLabel>
-              <Input
+              <label>Event Time</label>
+              <input
                 name="time"
                 type="time"
                 value={newEventData.time}
                 onChange={handleInputChange}
-                mb={4}
-                bg="gray.700"
-                color="white"
               />
-            </FormControl>
-          </ModalBody>
 
-          <ModalFooter>
-            <ChakraButton
-              colorScheme="yellow"
-              onClick={handleAddEventSubmit}
-              isLoading={loading}
-            >
-              Add Event
-            </ChakraButton>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Box>
+              <Button type="submit">Add Event</Button>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };

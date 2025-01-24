@@ -1,0 +1,82 @@
+/* event-detail-card */
+.event-detail-card {
+  background-color: #fff;
+  padding: 20px;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: "Roboto", sans-serif;
+  color: #333;
+}
+
+.event-details-header {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #202124;
+}
+
+.event-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: #1a73e8;
+}
+
+.event-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.event-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  color: #5f6368;
+}
+
+.event-startTime,
+.event-endTime,
+.event-location {
+  font-size: 1rem;
+  color: #5f6368;
+  margin-bottom: 8px;
+}
+
+.event-categories {
+  font-size: 1rem;
+  margin-top: 12px;
+}
+
+.event-categories span {
+  background-color: #f1f3f4;
+  color: #202124;
+  border-radius: 12px;
+  padding: 6px 12px;
+  margin-right: 8px;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.user-info img {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+}
+
+.user-name {
+  font-size: 1rem;
+  color: #202124;
+  font-weight: 500;
+}

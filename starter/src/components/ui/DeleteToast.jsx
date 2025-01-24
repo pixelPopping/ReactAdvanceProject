@@ -1,23 +1,26 @@
-import React from "react";
-import { useToast } from "@chakra-ui/react";
+import React, { useState, useEffect } from "react";
+import "./DeleteToast.css"; // Import the CSS file for the toast styling
 
 export const DeleteToast = ({ status, message, description }) => {
-  const toast = useToast();
+  const [visible, setVisible] = useState(false);
 
-  // Show the toast notification when props change
-  React.useEffect(() => {
+  useEffect(() => {
     if (status && message) {
-      toast({
-        title: message,
-        description: description,
-        status: status,
-        duration: 3000,
-        isClosable: true,
-      });
+      setVisible(true);
+      setTimeout(() => {
+        setVisible(false);
+      }, 3000); // The toast will disappear after 3 seconds
     }
-  }, [status, message, description, toast]);
+  }, [status, message]);
 
-  return null; // This component doesn't render anything visually, just triggers the toast
+  if (!visible) return null;
+
+  return (
+    <div className={`toast ${status}`}>
+      <strong>{message}</strong>
+      <p>{description}</p>
+    </div>
+  );
 };
 
 export default DeleteToast;

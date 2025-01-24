@@ -1,22 +1,49 @@
-import React from "react";
-import { Box, Heading, Text, Image } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-// Placeholder for fetching data (users, events, and categories)
-const users = []; // Your array of users will go here
-const events = []; // Your array of events will go here
-const categories = []; // Your array of categories will go here
-
-// Simulate the logged-in user (you can replace this logic with your actual login logic)
-const loggedInUserId = ""; // Replace with actual logged-in user ID
+// Assuming you have the users, categories, and events fetched somewhere in the app
+const users = [
+  // Example user data
+  { id: "2", name: "John Doe", image: "https://example.com/john-doe.jpg" },
+];
+const categories = [
+  // Example category data
+  { id: 3, name: "Wellness" },
+];
+const events = [
+  // Example event data
+  {
+    id: "4",
+    createdBy: 2,
+    title: "Yoga",
+    description: "It's a bit of a stretch.",
+    image:
+      "https://wincacademy.github.io/webpages/media/pexels-gabby-k-5384538.jpg",
+    categoryIds: [3],
+    location: "Shavasana Yoga School",
+    startTime: "2023-03-09T06:00:00.000Z",
+    endTime: "2023-03-09T07:00:00.000Z",
+  },
+];
 
 export const FormPage = () => {
-  // Find the event you want to display (you can fetch a specific event from the events array)
-  const event = events[0]; // Replace this with logic to fetch the specific event
+  const { eventId } = useParams(); // Get event ID from URL params
+  const [event, setEvent] = useState(null);
 
-  // Find the user who created the event
+  useEffect(() => {
+    const fetchedEvent = events.find((event) => event.id === eventId);
+    setEvent(fetchedEvent); // Set the event data based on eventId
+  }, [eventId]);
+
+  // If event is missing, show a loading message
+  if (!event) {
+    return <div>Loading...</div>;
+  }
+
+  // Get the user who created the event
   const createdByUser = users.find(
     (user) => user.id === String(event.createdBy)
-  ); // Convert createdBy to string for comparison
+  );
 
   // Get category names based on categoryIds
   const eventCategories = event.categoryIds.map((id) => {
@@ -24,58 +51,55 @@ export const FormPage = () => {
     return category ? category.name : "Unknown category";
   });
 
-  // Check if the logged-in user is the creator of the event
-  const isCreator = loggedInUserId === String(event.createdBy); // Ensure both sides are strings
-
-  // Find the logged-in user details
-  const loggedInUser = users.find((user) => user.id === loggedInUserId);
+  // Format the startTime and endTime
+  const startTimeFormatted = new Date(event.startTime).toLocaleString();
+  const endTimeFormatted = new Date(event.endTime).toLocaleString();
 
   return (
-    <Box p={5}>
-      <Heading as="h2">{event.title}</Heading>
-      <Text fontSize="md" mt={2}>
-        {event.description}
-      </Text>
+    <div className="form-page-container">
+      <h2>{event.title}</h2>
+      <p>{event.description}</p>
 
-      <Box mt={4}>
-        <Text fontWeight="bold">Created by:</Text>
-        <Box display="flex" alignItems="center">
-          {/* If the logged-in user is the creator, display their info */}
-          <Image
-            src={isCreator ? loggedInUser?.image : createdByUser?.image}
-            alt={isCreator ? loggedInUser?.name : createdByUser?.name}
-            boxSize="40px"
-            borderRadius="full"
-            mr={2}
+      <div className="event-details">
+        <h3>Created by:</h3>
+        <div className="created-by">
+          <img
+            src={createdByUser?.image || "https://via.placeholder.com/150"}
+            alt={createdByUser?.name || "Unknown User"}
+            className="profile-image"
           />
-          <Text>{isCreator ? loggedInUser?.name : createdByUser?.name}</Text>
-        </Box>
-      </Box>
+          <span>{createdByUser?.name || "Unknown User"}</span>
+        </div>
+      </div>
 
-      <Box mt={4}>
-        <Text fontWeight="bold">Categories:</Text>
-        <Text>{eventCategories.join(", ")}</Text>
-      </Box>
+      <div className="categories">
+        <h3>Categories:</h3>
+        <p>{eventCategories.join(", ")}</p>
+      </div>
 
-      <Box mt={4}>
-        <Text fontWeight="bold">Location:</Text>
-        <Text>{event.location}</Text>
-      </Box>
+      <div className="location">
+        <h3>Location:</h3>
+        <p>{event.location}</p>
+      </div>
 
-      <Box mt={4}>
-        <Text fontWeight="bold">Event Time:</Text>
-        <Text>
-          {new Date(event.startTime).toLocaleString()} to{" "}
-          {new Date(event.endTime).toLocaleString()}
-        </Text>
-      </Box>
+      <div className="event-time">
+        <h3>Event Time:</h3>
+        <p>
+          {startTimeFormatted} to {endTimeFormatted}
+        </p>
+      </div>
 
       {event.image && (
-        <Box mt={4}>
-          <Image src={event.image} alt={event.title} maxWidth="100%" />
-        </Box>
+        <div className="event-image">
+          <img src={event.image} alt={event.title} />
+        </div>
       )}
-    </Box>
+
+      <div className="action-buttons">
+        <button className="edit-button">Edit</button>
+        <button className="delete-button">Delete</button>
+      </div>
+    </div>
   );
 };
 

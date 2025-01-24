@@ -1,0 +1,45 @@
+/* Navigation container styling */
+.navigation-container {
+  background-color: #ffffff;
+  padding: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  border-radius: 8px;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+/* Navigation links container */
+.navigation-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Navigation links styling */
+.nav-link {
+  text-decoration: none; /* Remove underline from the links */
+}
+
+.nav-link span {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333333;
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.nav-link span:hover {
+  color: #f39c12; /* Hover link color */
+}
+
+/* Active link styling */
+.nav-link .active {
+  color: #f39c12; /* Active link color */
+}
+
+.nav-link span:active {
+  color: #e67e22; /* Darker shade for active state */
+}

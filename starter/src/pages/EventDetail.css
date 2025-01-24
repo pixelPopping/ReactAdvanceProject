@@ -1,0 +1,100 @@
+/* Overall container for the event details page */
+.event-details-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+}
+
+/* Buttons for Edit and Delete placed on the left side */
+.event-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* Styling for Back button */
+.back-button {
+  background-color: #2196f3;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.back-button:hover {
+  background-color: #1976d2;
+}
+
+/* General card styling */
+.event-detail-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.event-details-header {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.event-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #1a73e8;
+}
+
+.event-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.event-startTime,
+.event-endTime {
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.event-location {
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.event-categories {
+  margin-top: 12px;
+}
+
+.event-categories span {
+  display: inline-block;
+  background-color: #f1f1f1;
+  padding: 5px 10px;
+  margin-right: 8px;
+  border-radius: 12px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.user-info img {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+}
+
+.user-name {
+  font-size: 1rem;
+  color: #202124;
+  font-weight: 500;
+}
