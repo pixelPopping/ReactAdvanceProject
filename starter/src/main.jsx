@@ -1,52 +1,50 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom"; // React Router for routing
-import { EventsPage } from "./pages/EventsPage"; // Events page component
-import { Root } from "./components/Root"; // Root component (common layout or structure)
-import { FormPage } from "./pages/FormPage"; // Form page component for adding/editing events
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { EventsPage } from "./pages/EventsPage";
+import { Root } from "./components/Root";
+import { FormPage } from "./pages/FormPage";
 import EventDetails, {
   loader as eventDetailsLoader,
-} from "./pages/EventDetails"; // Event details page with loader for specific event
-import { loader as eventsPageLoader } from "./pages/EventsPage"; // Loader for events data
-import { ChakraProvider } from "@chakra-ui/react"; // Corrected ChakraProvider import
+} from "./pages/EventDetails";
+import { loader as eventsPageLoader } from "./pages/EventsPage";
+import ErrorPage from "./pages/ErrorPage"; // Custom error component
+import { ChakraProvider } from "@chakra-ui/react";
+import { EventsProvider } from "./components/EventContext";
 
-// Create the router with routes
 const router = createBrowserRouter([
   {
-    path: "/", // Root path
-    element: <Root />, // Root component for common layout or navigation
+    path: "/",
+    element: <Root />,
+    errorElement: <ErrorPage />, // Error fallback for the root
     children: [
       {
-        path: "/", // Default path for events page
-        element: <EventsPage />, // Events page component
-        loader: eventsPageLoader, // Load events data for the EventsPage
+        path: "/",
+        element: <EventsPage />,
+        loader: eventsPageLoader,
+        errorElement: <ErrorPage />, // Error fallback for this route
       },
       {
-        path: "/event/:eventId", // Dynamic route for event details
-        element: <EventDetails />, // Event details component
-        loader: eventDetailsLoader, // Loader for fetching specific event details
+        path: "/event/:eventId",
+        element: <EventDetails />,
+        loader: eventDetailsLoader,
+        errorElement: <ErrorPage />, // Error fallback for event details
       },
       {
-        path: "/FormPage", // Path for the form to add or edit events
-        element: <FormPage />, // FormPage component
+        path: "/formPage",
+        element: <FormPage />,
+        errorElement: <ErrorPage />, // Error fallback for form page
       },
     ],
-    errorElement: (
-      <div>
-        <h2>Page Not Found</h2>
-        <p>The page you are looking for does not exist.</p>
-      </div>
-    ), // Error message for unhandled routes
   },
 ]);
 
-// Render the app to the root element
 ReactDOM.createRoot(document.getElementById("root")).render(
   <ChakraProvider>
-    {/* Wrap the app with ChakraProvider for styling and components */}
-    <React.StrictMode>
-      <RouterProvider router={router} />{" "}
-      {/* Provide the router configuration to the app */}
-    </React.StrictMode>
+    <EventsProvider>
+      <React.StrictMode>
+        <RouterProvider router={router} />
+      </React.StrictMode>
+    </EventsProvider>
   </ChakraProvider>
 );

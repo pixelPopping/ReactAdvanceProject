@@ -1,0 +1,51 @@
+/* Scoped styling */
+.form-page-container .google-input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.form-page-container .google-btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+}
+
+.form-page-container .google-btn:hover {
+  background-color: #45a049;
+}
+
+.form-page-container .slider-toggle {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+}
+
+.form-page-container .slider-toggle:hover {
+  background-color: #45a049;
+}
+
+/* Category Slider */
+.form-page-container .category-slider {
+  display: none;
+  transition: max-height 0.3s ease-out;
+  overflow: hidden;
+  max-height: 0;
+}
+
+.form-page-container .category-slider.open {
+  display: block;
+  max-height: 500px; /* Adjust based on your content */
+}
+
+.form-page-container .category-checkbox {
+  margin: 5px 0;
+}

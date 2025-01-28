@@ -1,26 +1,73 @@
-.add-event-btn {
-  background-color: #38b2ac; /* Chakra UI's teal color for clean look */
+/* Add Event Button */
+.add-event-button {
+  position: fixed; /* Keeps the button fixed on the screen */
+  bottom: 30px; /* Position near the bottom */
+  right: 30px; /* Position near the right side */
+  background-color: #6200ea; /* Purple background for a bold look */
   color: white; /* White text for contrast */
-  font-size: 1.125rem; /* Slightly larger font size */
-  font-weight: 600; /* Semi-bold text */
-  padding: 12px 24px; /* Padding for the button size */
-  border-radius: 8px; /* Rounded corners for a modern look */
-  border: none; /* Remove default border */
-  cursor: pointer; /* Pointer cursor to show it's clickable */
-  transition: all 0.3s ease; /* Smooth transition on hover/click */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  border: none;
+  padding: 16px 32px; /* Larger padding for a more prominent button */
+  border-radius: 50px; /* Circular shape for a modern, sleek appearance */
+  font-size: 18px; /* Slightly larger font for readability */
+  font-weight: 600; /* Medium bold font for emphasis */
+  text-transform: uppercase; /* Capitalize text for cleaner look */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease,
+    box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Subtle shadow for depth */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.add-event-btn:hover {
-  background-color: #319795; /* Slightly darker color on hover */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Slightly bigger shadow on hover */
+.add-event-button:hover {
+  background-color: #3700b3; /* Darker purple on hover for visual feedback */
+  transform: translateY(-4px); /* Slight lift on hover */
 }
 
-.add-event-btn:active {
-  background-color: #2c7a7b; /* Darker shade on click */
+.add-event-button:active {
+  background-color: #6200ea; /* Keep the same color when clicked */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Slight shadow on click */
 }
 
-.add-event-btn:focus {
-  outline: none; /* Remove default focus outline */
-  box-shadow: 0 0 0 3px rgba(56, 178, 172, 0.6); /* Custom focus outline for accessibility */
+.add-event-button i {
+  margin-right: 10px; /* Space between the icon and text */
+  font-size: 20px; /* Slightly larger icon for better visibility */
+}
+
+/* Optional: Add animation for button interaction */
+.add-event-button {
+  transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.add-event-button:hover {
+  transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+/* Filter section */
+.filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  justify-content: center; /* Align filters horizontally */
+  align-items: center; /* Center items vertically */
+}
+
+.filters input,
+.filters select {
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #dadce0;
+  width: 220px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.filters input:focus,
+.filters select:focus {
+  outline: none;
+  border-color: #6200ea;
+  box-shadow: 0 0 8px rgba(98, 0, 234, 0.3);
 }

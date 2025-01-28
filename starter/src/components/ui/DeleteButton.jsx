@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import toast CSS
 import "./DeleteButton.css";
 
 const DeleteButton = ({ eventId }) => {
@@ -19,12 +21,16 @@ const DeleteButton = ({ eventId }) => {
         throw new Error("Failed to delete the event");
       }
 
+      // Show success toast
+      toast.success("Event deleted successfully!");
+
       // Redirect to the events page after successful deletion
       navigate("/");
     } catch (err) {
       // Log any errors that occur during the delete process
       console.error("Error deleting event:", err.message);
-      alert("Error deleting event: " + err.message);
+      // Show error toast
+      toast.error("Error deleting event: " + err.message);
     }
   };
 

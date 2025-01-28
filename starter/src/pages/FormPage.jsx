@@ -1,104 +1,241 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import BackButton from "../components/ui/BackButton"; // Adjust path to your BackButton component
+import "./FormPage.css";
 
-// Assuming you have the users, categories, and events fetched somewhere in the app
-const users = [
-  // Example user data
-  { id: "2", name: "John Doe", image: "https://example.com/john-doe.jpg" },
-];
 const categories = [
-  // Example category data
-  { id: 3, name: "Wellness" },
-];
-const events = [
-  // Example event data
-  {
-    id: "4",
-    createdBy: 2,
-    title: "Yoga",
-    description: "It's a bit of a stretch.",
-    image:
-      "https://wincacademy.github.io/webpages/media/pexels-gabby-k-5384538.jpg",
-    categoryIds: [3],
-    location: "Shavasana Yoga School",
-    startTime: "2023-03-09T06:00:00.000Z",
-    endTime: "2023-03-09T07:00:00.000Z",
-  },
+  { id: "1", name: "Sport" },
+  { id: "2", name: "Games" },
+  { id: "3", name: "Relaxation" },
+  { id: "4", name: "Conferences" },
+  { id: "5", name: "Party" },
+  { id: "6", name: "Health" },
+  { id: "7", name: "Concert" },
+  { id: "8", name: "Study" },
+  { id: "9", name: "Food" },
+  { id: "10", name: "Travel" },
+  { id: "11", name: "Dating" },
+  { id: "12", name: "Art" },
+  { id: "13", name: "Photographic" },
+  { id: "14", name: "Cooking" },
 ];
 
-export const FormPage = () => {
-  const { eventId } = useParams(); // Get event ID from URL params
-  const [event, setEvent] = useState(null);
+export const FormPage = ({ onEventCreated }) => {
+  const { eventId } = useParams();
+  const [event, setEvent] = useState({
+    title: "",
+    description: "",
+    categoryIds: [],
+    location: "",
+    startTime: "",
+    endTime: "",
+    image: "",
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [error, setError] = useState(""); // State for error message
+  const [categoriesOpen, setCategoriesOpen] = useState(false); // Toggle for category dropdown
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchedEvent = events.find((event) => event.id === eventId);
-    setEvent(fetchedEvent); // Set the event data based on eventId
+    if (eventId) {
+      const fetchEvent = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:3000/events/${eventId}`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch event");
+          }
+          const fetchedEvent = await response.json();
+          setEvent(fetchedEvent);
+          setIsEditing(true);
+        } catch (error) {
+          console.error("Error fetching event:", error);
+        }
+      };
+      fetchEvent();
+    }
   }, [eventId]);
 
-  // If event is missing, show a loading message
-  if (!event) {
-    return <div>Loading...</div>;
-  }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEvent((prevEvent) => ({
+      ...prevEvent,
+      [name]: value,
+    }));
+  };
 
-  // Get the user who created the event
-  const createdByUser = users.find(
-    (user) => user.id === String(event.createdBy)
-  );
+  const handleCategoryChange = (categoryId) => {
+    setEvent((prevEvent) => {
+      const isSelected = prevEvent.categoryIds.includes(categoryId);
+      const updatedCategories = isSelected
+        ? prevEvent.categoryIds.filter((id) => id !== categoryId)
+        : [...prevEvent.categoryIds, categoryId];
 
-  // Get category names based on categoryIds
-  const eventCategories = event.categoryIds.map((id) => {
-    const category = categories.find((cat) => cat.id === id);
-    return category ? category.name : "Unknown category";
-  });
+      return { ...prevEvent, categoryIds: updatedCategories };
+    });
+  };
 
-  // Format the startTime and endTime
-  const startTimeFormatted = new Date(event.startTime).toLocaleString();
-  const endTimeFormatted = new Date(event.endTime).toLocaleString();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (new Date(event.endTime) < new Date(event.startTime)) {
+      setError("End time cannot be before start time.");
+      return;
+    } else {
+      setError("");
+    }
+
+    const newEvent = {
+      title: event.title,
+      description: event.description,
+      categoryIds: event.categoryIds,
+      location: event.location,
+      startTime: event.startTime,
+      endTime: event.endTime,
+      ...(event.image && { image: event.image }),
+    };
+
+    try {
+      const response = await fetch(
+        eventId
+          ? `http://localhost:3000/events/${eventId}`
+          : "http://localhost:3000/events",
+        {
+          method: eventId ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newEvent),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Failed to save event: ${errorData.message}`);
+      }
+
+      const createdOrUpdatedEvent = await response.json();
+      console.log("Event saved successfully:", createdOrUpdatedEvent);
+
+      if (onEventCreated) {
+        onEventCreated();
+      }
+
+      navigate("/"); // Redirect to events page
+    } catch (error) {
+      console.error("Error saving event:", error);
+    }
+  };
 
   return (
     <div className="form-page-container">
-      <h2>{event.title}</h2>
-      <p>{event.description}</p>
+      <BackButton />
+      <h2>{isEditing ? "Edit Event" : "Add New Event"}</h2>
 
-      <div className="event-details">
-        <h3>Created by:</h3>
-        <div className="created-by">
-          <img
-            src={createdByUser?.image || "https://via.placeholder.com/150"}
-            alt={createdByUser?.name || "Unknown User"}
-            className="profile-image"
+      <form onSubmit={handleSubmit}>
+        {error && <div className="error-message">{error}</div>}
+        <div className="form-group">
+          <label htmlFor="title">Event Title</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value={event.title}
+            onChange={handleInputChange}
+            required
+            className="google-input"
           />
-          <span>{createdByUser?.name || "Unknown User"}</span>
         </div>
-      </div>
-
-      <div className="categories">
-        <h3>Categories:</h3>
-        <p>{eventCategories.join(", ")}</p>
-      </div>
-
-      <div className="location">
-        <h3>Location:</h3>
-        <p>{event.location}</p>
-      </div>
-
-      <div className="event-time">
-        <h3>Event Time:</h3>
-        <p>
-          {startTimeFormatted} to {endTimeFormatted}
-        </p>
-      </div>
-
-      {event.image && (
-        <div className="event-image">
-          <img src={event.image} alt={event.title} />
+        <div className="form-group">
+          <label htmlFor="description">Event Description</label>
+          <textarea
+            id="description"
+            name="description"
+            value={event.description}
+            onChange={handleInputChange}
+            required
+            className="google-input"
+          />
         </div>
-      )}
-
-      <div className="action-buttons">
-        <button className="edit-button">Edit</button>
-        <button className="delete-button">Delete</button>
-      </div>
+        <div className="form-group">
+          <label htmlFor="categories">Categories</label>
+          <button
+            type="button"
+            onClick={() => setCategoriesOpen(!categoriesOpen)}
+            className="google-btn"
+          >
+            {categoriesOpen ? "Hide Categories" : "Select Categories"}
+          </button>
+          {categoriesOpen && (
+            <div className="categories-dropdown">
+              {categories.map((category) => (
+                <div key={category.id} className="category-item">
+                  <label>
+                    <input
+                      type="checkbox"
+                      value={category.id}
+                      checked={event.categoryIds.includes(category.id)}
+                      onChange={() => handleCategoryChange(category.id)}
+                    />
+                    {category.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="form-group">
+          <label htmlFor="location">Event Location</label>
+          <input
+            type="text"
+            id="location"
+            name="location"
+            value={event.location}
+            onChange={handleInputChange}
+            required
+            className="google-input"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="startTime">Start Time</label>
+          <input
+            type="datetime-local"
+            id="startTime"
+            name="startTime"
+            value={event.startTime}
+            onChange={handleInputChange}
+            required
+            className="google-input"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="endTime">End Time</label>
+          <input
+            type="datetime-local"
+            id="endTime"
+            name="endTime"
+            value={event.endTime}
+            onChange={handleInputChange}
+            required
+            className="google-input"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="image">Event Image URL</label>
+          <input
+            type="url"
+            id="image"
+            name="image"
+            value={event.image || ""}
+            onChange={handleInputChange}
+            className="google-input"
+          />
+        </div>
+        <button type="submit" className="google-btn">
+          {isEditing ? "Update Event" : "Create Event"}
+        </button>
+      </form>
     </div>
   );
 };

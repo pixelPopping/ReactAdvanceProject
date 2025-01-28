@@ -1,26 +1,33 @@
-import React, { useState } from "react";
-import "./SearchFilter.css"; // Create this CSS file for styling
+import React, { useEffect, useState } from "react";
+import "./SearchFilter.css";
 
 export const SearchFilter = ({
   categories = [],
   selectedCategory,
   onCategoryChange,
   onSearch,
-  value,
+  value = "",
 }) => {
-  const [searchTerm, setSearchTerm] = useState(value); // Initialize with the value prop
+  const [searchTerm, setSearchTerm] = useState(value);
+
+  // Sync local state with the value prop
+  useEffect(() => {
+    setSearchTerm(value);
+  }, [value]);
 
   const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-    onSearch(event.target.value); // Propagate the value up to the parent
+    const searchValue = event.target.value;
+    setSearchTerm(searchValue);
+    onSearch(searchValue); // Notify parent component
   };
 
   const handleCategorySelect = (categoryId) => {
-    onCategoryChange(categoryId);
+    onCategoryChange(categoryId); // Notify parent component
   };
 
   return (
     <div className="search-filter">
+      {/* Search Input */}
       <div className="search-input-container">
         <input
           type="text"
@@ -32,6 +39,7 @@ export const SearchFilter = ({
         <button className="search-button">🔍</button>
       </div>
 
+      {/* Category Dropdown */}
       <div className="category-dropdown">
         <button className="category-button">
           {categories.find((cat) => cat.id === selectedCategory)?.name ||

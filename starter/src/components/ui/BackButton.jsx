@@ -1,20 +1,6 @@
-import { Button } from "@chakra-ui/react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-
-const pacmanButtonStyle = {
-  backgroundColor: "#FFEB3B", // Yellow (Pac-Man)
-  borderRadius: "50%", // Circular button
-  color: "#FFF", // White text color
-  fontWeight: "bold",
-  fontSize: "18px",
-  padding: "12px 30px",
-  transition: "all 0.3s ease",
-  _hover: {
-    backgroundColor: "#FFCA28", // Slightly darker yellow on hover
-    transform: "scale(1.05)",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-  },
-};
+import "./BackButton.css"; // Import the CSS file for styling
 
 export const BackButton = ({ children }) => {
   const navigate = useNavigate(); // React Router's navigate hook
@@ -29,10 +15,10 @@ export const BackButton = ({ children }) => {
   };
 
   return (
-    <Button onClick={goBack} {...pacmanButtonStyle}>
+    <button onClick={goBack} className="back-button">
       {children || "Go back to events"}{" "}
       {/* Default text if no children passed */}
-    </Button>
+    </button>
   );
 };
 

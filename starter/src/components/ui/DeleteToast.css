@@ -3,29 +3,33 @@
   position: fixed;
   top: 20px;
   right: 20px;
-  padding: 15px;
-  border-radius: 5px;
+  padding: 16px 24px; /* Slightly more padding for a balanced look */
+  border-radius: 12px; /* Rounded corners for a modern design */
   color: white;
-  font-family: Arial, sans-serif;
+  font-family: Roboto, Arial, sans-serif; /* Google's font stack */
   z-index: 1000;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
   opacity: 0;
   transform: translateY(-20px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transitions */
 }
 
+/* Success Toast - Google Material Green */
 .toast.success {
-  background-color: #38a169; /* Green for success */
+  background-color: #4caf50; /* Material Green for success */
 }
 
+/* Error Toast - Google Material Red */
 .toast.error {
-  background-color: #e53e3e; /* Red for error */
+  background-color: #f44336; /* Material Red for error */
 }
 
+/* Warning Toast - Google Material Orange */
 .toast.warning {
-  background-color: #dd6b20; /* Orange for warning */
+  background-color: #ff9800; /* Material Orange for warning */
 }
 
+/* Visible state for the toast */
 .toast.visible {
   opacity: 1;
   transform: translateY(0);

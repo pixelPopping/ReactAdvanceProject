@@ -1,0 +1,30 @@
+/* Base styles for the BackButton */
+.back-button {
+  background-color: #ffeb3b; /* Yellow (Pac-Man inspired) */
+  color: white;
+  border-radius: 50%; /* Circular button */
+  font-weight: bold;
+  font-size: 18px;
+  padding: 12px 30px;
+  text-align: center;
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  border: none; /* Remove default button border */
+}
+
+.back-button:hover {
+  background-color: #ffca28; /* Slightly darker yellow on hover */
+  transform: scale(1.05); /* Enlarge on hover for interactivity */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Slightly deeper shadow on hover */
+}
+
+.back-button:focus {
+  outline: none; /* Remove focus outline */
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Custom focus outline */
+}
+
+.back-button:active {
+  background-color: #fbc02d; /* Darker yellow on active state */
+}

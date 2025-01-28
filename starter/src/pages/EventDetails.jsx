@@ -24,8 +24,8 @@ export const loader = async ({ params }) => {
   return { event, categories, users };
 };
 
-const EventDetails = () => {
-  const { eventId } = useParams(); // Get eventId from the URL
+const EventDetails = ({ refetchEvents }) => {
+  const { eventId } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -33,29 +33,23 @@ const EventDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch event, categories, and user data
   useEffect(() => {
     const fetchEventData = async () => {
       try {
-        const eventResponse = await fetch(
-          `http://localhost:3000/events/${eventId}`
-        );
-        const categoriesResponse = await fetch(
-          "http://localhost:3000/categories"
-        );
-        const usersResponse = await fetch("http://localhost:3000/users");
+        const [eventResponse, categoriesResponse, usersResponse] =
+          await Promise.all([
+            fetch(`http://localhost:3000/events/${eventId}`),
+            fetch("http://localhost:3000/categories"),
+            fetch("http://localhost:3000/users"),
+          ]);
 
         if (!eventResponse.ok || !categoriesResponse.ok || !usersResponse.ok) {
           throw new Error("Failed to fetch event, categories, or users data");
         }
 
-        const eventData = await eventResponse.json();
-        const categoriesData = await categoriesResponse.json();
-        const usersData = await usersResponse.json();
-
-        setEvent(eventData);
-        setCategories(categoriesData);
-        setUsers(usersData);
+        setEvent(await eventResponse.json());
+        setCategories(await categoriesResponse.json());
+        setUsers(await usersResponse.json());
       } catch (err) {
         setError(err.message);
       } finally {
@@ -66,7 +60,6 @@ const EventDetails = () => {
     fetchEventData();
   }, [eventId]);
 
-  // Handle saving an updated event
   const handleSave = async (updatedEvent) => {
     try {
       const response = await fetch(`http://localhost:3000/events/${eventId}`, {
@@ -79,14 +72,18 @@ const EventDetails = () => {
         throw new Error("Failed to update the event");
       }
 
-      setEvent(updatedEvent); // Update local state
+      setEvent(updatedEvent);
+
+      // Optionally refetch events list in the parent component
+      if (refetchEvents) refetchEvents();
+
+      // Navigate back to the EventsPage after saving
+      navigate("/");
     } catch (err) {
-      console.error(err.message);
       setError(err.message);
     }
   };
 
-  // Handle event deletion
   const handleDelete = async () => {
     try {
       const response = await fetch(`http://localhost:3000/events/${eventId}`, {
@@ -97,20 +94,18 @@ const EventDetails = () => {
         throw new Error("Failed to delete the event");
       }
 
-      navigate("/"); // Redirect to events page after successful deletion
+      // Optionally refetch events list in the parent component
+      if (refetchEvents) refetchEvents();
+
+      // Navigate back to the EventsPage after deletion
+      navigate("/");
     } catch (err) {
-      console.error(err.message);
       setError(err.message);
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   const createdByUser = users.find(
     (user) => user.id === String(event?.createdBy)
@@ -118,17 +113,12 @@ const EventDetails = () => {
 
   return (
     <div className="event-details-container">
-      {/* BackButton at the top */}
       <BackButton onClick={() => navigate(-1)} />
-
-      {/* Display event details using DetailCard */}
       <DetailCard
         event={event}
         categories={categories}
         createdByUser={createdByUser}
       />
-
-      {/* Edit and Delete Buttons */}
       <div className="event-actions">
         <EditDetailButton
           event={event}
@@ -136,9 +126,7 @@ const EventDetails = () => {
           createdByUser={createdByUser}
           onSave={handleSave}
         />
-
-        {/* Pass the eventId to the DeleteButton */}
-        <DeleteButton eventId={eventId} />
+        <DeleteButton eventId={eventId} onDelete={handleDelete} />
       </div>
     </div>
   );

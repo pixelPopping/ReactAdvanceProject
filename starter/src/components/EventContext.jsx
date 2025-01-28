@@ -1,20 +1,14 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-// Create the context
+// Create Context
 const EventsContext = createContext();
 
-// Custom hook to use the events context
-export const useEvents = () => useContext(EventsContext);
-
-// Provider component to wrap around your app
+// Context Provider
 export const EventsProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-  // Fetch events and categories data
   const fetchData = async () => {
-    setLoading(true);
     try {
       const eventsResponse = await fetch("http://localhost:3000/events");
       const categoriesResponse = await fetch(
@@ -31,29 +25,43 @@ export const EventsProvider = ({ children }) => {
       setEvents(eventsData);
       setCategories(categoriesData);
     } catch (error) {
-      console.error("Error fetching data", error);
-    } finally {
-      setLoading(false);
+      console.error("Failed to load data:", error);
     }
   };
 
-  // Fetch data on component mount
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const updateEvent = (updatedEvent) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event.id === updatedEvent.id ? updatedEvent : event
+      )
+    );
+  };
 
-  // Function to add a new event
   const addEvent = (newEvent) => {
     setEvents((prevEvents) => [...prevEvents, newEvent]);
   };
 
-  // Return the context provider with the value of events, categories, etc.
+  const deleteEvent = (eventId) => {
+    setEvents((prevEvents) =>
+      prevEvents.filter((event) => event.id !== eventId)
+    );
+  };
+
   return (
-    <EventsContext.Provider value={{ events, categories, loading, addEvent }}>
+    <EventsContext.Provider
+      value={{
+        events,
+        categories,
+        fetchData,
+        updateEvent,
+        addEvent,
+        deleteEvent,
+      }}
+    >
       {children}
     </EventsContext.Provider>
   );
 };
 
-// Export both named hook and provider
-export default EventsContext;
+// Custom hook to use EventsContext
+export const useEvents = () => useContext(EventsContext);
