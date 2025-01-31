@@ -11,6 +11,8 @@ import { loader as eventsPageLoader } from "./pages/EventsPage";
 import ErrorPage from "./pages/ErrorPage"; // Custom error component
 import { ChakraProvider } from "@chakra-ui/react";
 import { EventsProvider } from "./components/EventContext";
+import { ToastContainer } from "react-toastify"; // Import ToastContainer
+import "react-toastify/dist/ReactToastify.css"; // Import toast styles
 
 const router = createBrowserRouter([
   {
@@ -39,12 +41,21 @@ const router = createBrowserRouter([
   },
 ]);
 
+// Render the app
 ReactDOM.createRoot(document.getElementById("root")).render(
   <ChakraProvider>
     <EventsProvider>
-      <React.StrictMode>
-        <RouterProvider router={router} />
-      </React.StrictMode>
+      {/* Remove StrictMode for development to avoid double-rendering issues */}
+      <RouterProvider router={router} />
+      {/* ToastContainer is now added globally */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+      />
     </EventsProvider>
   </ChakraProvider>
 );

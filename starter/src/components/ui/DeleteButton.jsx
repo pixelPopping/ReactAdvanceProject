@@ -25,7 +25,7 @@ const DeleteButton = ({ eventId }) => {
       toast.success("Event deleted successfully!");
 
       // Redirect to the events page after successful deletion
-      navigate("/");
+      navigate("/"); // Or use navigate("/events") based on your app structure
     } catch (err) {
       // Log any errors that occur during the delete process
       console.error("Error deleting event:", err.message);

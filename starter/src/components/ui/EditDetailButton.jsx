@@ -1,22 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./EditeDetail.css";
-
-const categories = [
-  { id: "1", name: "Sport" },
-  { id: "2", name: "Games" },
-  { id: "3", name: "Relaxation" },
-  { id: "4", name: "Conferences" },
-  { id: "5", name: "Party" },
-  { id: "6", name: "Health" },
-  { id: "7", name: "Concert" },
-  { id: "8", name: "Study" },
-  { id: "9", name: "Food" },
-  { id: "10", name: "Travel" },
-  { id: "11", name: "Dating" },
-  { id: "12", name: "Art" },
-  { id: "13", name: "Photographic" },
-  { id: "14", name: "Cooking" },
-];
 
 const EditDetailButton = ({ event, onSave }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,6 +10,25 @@ const EditDetailButton = ({ event, onSave }) => {
   });
   const [error, setError] = useState("");
   const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
+  const [categories, setCategories] = useState([]); // State to hold categories
+
+  // Fetch categories from the API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/categories"); // Update URL as needed
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+        const data = await response.json();
+        setCategories(data); // Populate categories state
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // Open modal and initialize form data
   const openModal = () => {
@@ -160,20 +162,24 @@ const EditDetailButton = ({ event, onSave }) => {
                   isCategoriesVisible ? "visible" : ""
                 }`}
               >
-                {categories.map((category) => (
-                  <div key={category.id} className="category-checkbox">
-                    <input
-                      type="checkbox"
-                      id={`category-${category.id}`}
-                      value={category.id}
-                      checked={formData.categoryIds.includes(category.id)}
-                      onChange={handleCategoryChange}
-                    />
-                    <label htmlFor={`category-${category.id}`}>
-                      {category.name}
-                    </label>
-                  </div>
-                ))}
+                {categories.length > 0 ? (
+                  categories.map((category) => (
+                    <div key={category.id} className="category-checkbox">
+                      <input
+                        type="checkbox"
+                        id={`category-${category.id}`}
+                        value={category.id}
+                        checked={formData.categoryIds.includes(category.id)}
+                        onChange={handleCategoryChange}
+                      />
+                      <label htmlFor={`category-${category.id}`}>
+                        {category.name}
+                      </label>
+                    </div>
+                  ))
+                ) : (
+                  <p>Loading categories...</p>
+                )}
               </div>
             </div>
 

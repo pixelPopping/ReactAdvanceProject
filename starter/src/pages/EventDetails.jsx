@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import toast CSS
 import DetailCard from "../components/DetailCard";
 import EditDetailButton from "../components/ui/EditDetailButton";
 import DeleteButton from "../components/ui/DeleteButton";
@@ -52,6 +54,7 @@ const EventDetails = ({ refetchEvents }) => {
         setUsers(await usersResponse.json());
       } catch (err) {
         setError(err.message);
+        toast.error("Failed to fetch event details.");
       } finally {
         setLoading(false);
       }
@@ -73,14 +76,15 @@ const EventDetails = ({ refetchEvents }) => {
       }
 
       setEvent(updatedEvent);
-
-      // Optionally refetch events list in the parent component
       if (refetchEvents) refetchEvents();
 
-      // Navigate back to the EventsPage after saving
+      // Show success toast after saving
+      toast.success("Event updated successfully!");
+
       navigate("/");
     } catch (err) {
       setError(err.message);
+      toast.error("Error updating event: " + err.message);
     }
   };
 
@@ -97,10 +101,14 @@ const EventDetails = ({ refetchEvents }) => {
       // Optionally refetch events list in the parent component
       if (refetchEvents) refetchEvents();
 
-      // Navigate back to the EventsPage after deletion
+      // Show success toast after deletion
+      toast.success("Event deleted successfully!");
+
       navigate("/");
     } catch (err) {
       setError(err.message);
+      // Show error toast in red when there is a deletion error
+      toast.error("Error deleting event: " + err.message); // This will show a red toast if error occurs
     }
   };
 

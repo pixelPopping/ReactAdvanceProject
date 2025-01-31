@@ -1,27 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import BackButton from "../components/ui/BackButton"; // Adjust path to your BackButton component
+import BackButton from "../components/ui/BackButton";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./FormPage.css";
-
-const categories = [
-  { id: "1", name: "Sport" },
-  { id: "2", name: "Games" },
-  { id: "3", name: "Relaxation" },
-  { id: "4", name: "Conferences" },
-  { id: "5", name: "Party" },
-  { id: "6", name: "Health" },
-  { id: "7", name: "Concert" },
-  { id: "8", name: "Study" },
-  { id: "9", name: "Food" },
-  { id: "10", name: "Travel" },
-  { id: "11", name: "Dating" },
-  { id: "12", name: "Art" },
-  { id: "13", name: "Photographic" },
-  { id: "14", name: "Cooking" },
-];
 
 export const FormPage = ({ onEventCreated }) => {
   const { eventId } = useParams();
+  const navigate = useNavigate();
+
   const [event, setEvent] = useState({
     title: "",
     description: "",
@@ -31,11 +18,31 @@ export const FormPage = ({ onEventCreated }) => {
     endTime: "",
     image: "",
   });
-  const [isEditing, setIsEditing] = useState(false);
-  const [error, setError] = useState(""); // State for error message
-  const [categoriesOpen, setCategoriesOpen] = useState(false); // Toggle for category dropdown
-  const navigate = useNavigate();
 
+  const [categories, setCategories] = useState([]); // Fetch categories dynamically
+  const [isEditing, setIsEditing] = useState(false);
+  const [error, setError] = useState("");
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
+
+  // Fetch categories from events.json
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/categories");
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Fetch event details if editing
   useEffect(() => {
     if (eventId) {
       const fetchEvent = async () => {
@@ -103,9 +110,7 @@ export const FormPage = ({ onEventCreated }) => {
           : "http://localhost:3000/events",
         {
           method: eventId ? "PUT" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newEvent),
         }
       );
@@ -116,25 +121,27 @@ export const FormPage = ({ onEventCreated }) => {
       }
 
       const createdOrUpdatedEvent = await response.json();
-      console.log("Event saved successfully:", createdOrUpdatedEvent);
+      console.log("Saved event:", createdOrUpdatedEvent); // ✅ Logs event data
 
-      if (onEventCreated) {
-        onEventCreated();
-      }
+      setEvent(createdOrUpdatedEvent); // ✅ Updates state with saved event
 
-      navigate("/"); // Redirect to events page
+      toast.success(`Event ${isEditing ? "updated" : "created"} successfully!`);
+
+      if (onEventCreated) onEventCreated();
+      navigate("/");
     } catch (error) {
       console.error("Error saving event:", error);
+      toast.error("There was an error saving the event.");
     }
   };
 
   return (
     <div className="form-page-container">
       <BackButton />
-      <h2>{isEditing ? "Edit Event" : "Add New Event"}</h2>
 
       <form onSubmit={handleSubmit}>
         {error && <div className="error-message">{error}</div>}
+
         <div className="form-group">
           <label htmlFor="title">Event Title</label>
           <input
@@ -145,8 +152,10 @@ export const FormPage = ({ onEventCreated }) => {
             onChange={handleInputChange}
             required
             className="google-input"
+            placeholder="Enter event title"
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="description">Event Description</label>
           <textarea
@@ -156,8 +165,10 @@ export const FormPage = ({ onEventCreated }) => {
             onChange={handleInputChange}
             required
             className="google-input"
+            placeholder="Enter event description"
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="categories">Categories</label>
           <button
@@ -185,6 +196,7 @@ export const FormPage = ({ onEventCreated }) => {
             </div>
           )}
         </div>
+
         <div className="form-group">
           <label htmlFor="location">Event Location</label>
           <input
@@ -195,8 +207,10 @@ export const FormPage = ({ onEventCreated }) => {
             onChange={handleInputChange}
             required
             className="google-input"
+            placeholder="Enter event location"
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="startTime">Start Time</label>
           <input
@@ -207,8 +221,10 @@ export const FormPage = ({ onEventCreated }) => {
             onChange={handleInputChange}
             required
             className="google-input"
+            placeholder="Select start time"
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="endTime">End Time</label>
           <input
@@ -219,8 +235,10 @@ export const FormPage = ({ onEventCreated }) => {
             onChange={handleInputChange}
             required
             className="google-input"
+            placeholder="Select end time"
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="image">Event Image URL</label>
           <input
@@ -230,8 +248,10 @@ export const FormPage = ({ onEventCreated }) => {
             value={event.image || ""}
             onChange={handleInputChange}
             className="google-input"
+            placeholder="Enter image URL (optional)"
           />
         </div>
+
         <button type="submit" className="google-btn">
           {isEditing ? "Update Event" : "Create Event"}
         </button>

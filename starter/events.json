@@ -24,11 +24,11 @@
       "description": "Bounce around with your friends",
       "image": "https://i.pinimg.com/736x/3d/2f/af/3d2faf4e3188d34a9fcdc00df59e77b0.jpg",
       "categoryIds": [
-        "2"
+        2
       ],
       "location": "My back yard",
-      "startTime": "2024-03-12T20:00",
-      "endTime": "2024-03-12T23:00"
+      "startTime": "2023-03-10T18:00",
+      "endTime": "2023-03-10T17:00:00.000Z"
     },
     {
       "id": "2",
@@ -50,26 +50,12 @@
       "description": "Hit that shuttle!",
       "image": "https://wincacademy.github.io/webpages/media/pexels-vladvictoria-2202685.jpg",
       "categoryIds": [
-        "7",
-        "1",
-        "2"
+        1,
+        2
       ],
       "location": "The Park",
-      "startTime": "2026-01-12T10:00",
-      "endTime": "2026-01-12T10:00"
-    },
-    {
-      "id": "4",
-      "createdBy": 2,
-      "title": "Yoga",
-      "description": "It's a bit of a stretch.",
-      "image": "https://wincacademy.github.io/webpages/media/pexels-gabby-k-5384538.jpg",
-      "categoryIds": [
-        3
-      ],
-      "location": "Shavasana Yoga School",
-      "startTime": "2023-03-09T06:00:00.000Z",
-      "endTime": "2023-03-09T07:00:00.000Z"
+      "startTime": "2023-03-15T12:00:00.000Z",
+      "endTime": "2023-03-15T13:30:00.000Z"
     }
   ],
   "categories": [

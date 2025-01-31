@@ -3,7 +3,7 @@ import { useLoaderData, useLocation, Link } from "react-router-dom";
 import { TextInput } from "../components/ui/TextInput";
 import Button from "../components/ui/Button";
 import EventCard from "../components/EventCard";
-import { toast } from "react-toastify"; // Import toast
+import { toast } from "react-toastify"; // Import toast for success and error messages
 import "react-toastify/dist/ReactToastify.css"; // Import toast CSS
 import "./EventsPage.css";
 
@@ -32,6 +32,7 @@ export const EventsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
+  const [toastShown, setToastShown] = useState(false); // Track if toast has been shown
 
   // Fetch events and categories when the location changes
   useEffect(() => {
@@ -53,19 +54,21 @@ export const EventsPage = () => {
         setEvents(eventsData);
         setCategories(categoriesData);
 
-        // Trigger toast for successful data load
-        // Remove or comment out this line if redundant toast is causing issues
-        // toast.success("Events and Categories loaded successfully!");
+        // Show the toast message only once
+        if (!toastShown) {
+          toast.success("Events loaded successfully!");
+          setToastShown(true); // Set toastShown to true after showing the toast
+        }
       } catch (error) {
         console.error("Failed to load data:", error);
-        toast.error("Failed to load events or categories.");
+        toast.error("Failed to load events.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [location]);
+  }, [location, toastShown]); // We use toastShown here to prevent multiple toasts
 
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
   const handleCategoryChange = (e) => setSelectedCategory(e.target.value);
