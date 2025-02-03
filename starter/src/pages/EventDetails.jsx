@@ -6,6 +6,7 @@ import DetailCard from "../components/DetailCard";
 import EditDetailButton from "../components/ui/EditDetailButton";
 import DeleteButton from "../components/ui/DeleteButton";
 import BackButton from "../components/ui/BackButton";
+import Layout from "../components/Layout"; // Import Layout component
 import "./EventDetail.css";
 
 export const loader = async ({ params }) => {
@@ -120,23 +121,27 @@ const EventDetails = ({ refetchEvents }) => {
   );
 
   return (
-    <div className="event-details-container">
-      <BackButton onClick={() => navigate(-1)} />
-      <DetailCard
-        event={event}
-        categories={categories}
-        createdByUser={createdByUser}
-      />
-      <div className="event-actions">
-        <EditDetailButton
+    <Layout>
+      {" "}
+      {/* Wrap the content in Layout */}
+      <div className="event-details-container">
+        <BackButton onClick={() => navigate(-1)} />
+        <DetailCard
           event={event}
           categories={categories}
           createdByUser={createdByUser}
-          onSave={handleSave}
         />
-        <DeleteButton eventId={eventId} onDelete={handleDelete} />
+        <div className="event-actions">
+          <EditDetailButton
+            event={event}
+            categories={categories}
+            createdByUser={createdByUser}
+            onSave={handleSave}
+          />
+          <DeleteButton eventId={eventId} onDelete={handleDelete} />
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

@@ -265,3 +265,65 @@ h3 {
     word-wrap: break-word; /* Ensure categories wrap onto the next line if necessary */
   }
 }
+
+/* Footer Styles */
+footer {
+  background-color: #f2f2f2; /* Light gray background for a clean look */
+  padding: 20px 0; /* Ample padding around the footer */
+  text-align: center; /* Centered text */
+  font-size: 14px; /* Medium text size */
+  color: #5f6368; /* Soft gray text color */
+  border-top: 1px solid #dadce0; /* Subtle border at the top */
+}
+
+footer a {
+  color: #4285f4; /* Google blue for the link */
+  text-decoration: none; /* Remove underlines */
+}
+
+footer a:hover {
+  text-decoration: underline; /* Underline the link on hover */
+  color: #0b3d91; /* Darken the blue when hovered */
+}
+
+footer p {
+  margin: 8px 0; /* Space between paragraphs */
+}
+
+footer .footer-container {
+  max-width: 1200px;
+  margin: 0 auto; /* Center the content in large screens */
+  padding: 0 16px; /* Add some padding on the sides */
+}
+
+footer .footer-links {
+  margin-top: 16px; /* Add space above the links */
+}
+
+footer .footer-links a {
+  margin: 0 12px; /* Space between links */
+  font-size: 14px; /* Keep links at the same size as the text */
+  color: #5f6368; /* Soft gray for the links */
+}
+
+footer .footer-links a:hover {
+  color: #4285f4; /* Change color on hover to Google blue */
+}
+
+/* Responsive Design for Footer */
+@media (max-width: 600px) {
+  footer {
+    font-size: 12px; /* Smaller text size on mobile */
+    padding: 16px 0; /* Less padding on smaller screens */
+  }
+
+  footer .footer-links {
+    display: block;
+    margin-top: 12px; /* Stack the links vertically on mobile */
+  }
+
+  footer .footer-links a {
+    margin-bottom: 8px; /* Space between each link */
+    text-align: center; /* Center align the links */
+  }
+}
