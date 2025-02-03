@@ -170,6 +170,71 @@ h3 {
   text-align: center;
 }
 
+/* Media Query for small screens (Mobile) */
+@media (max-width: 600px) {
+  /* Adjust search filter container */
+  .search-filter {
+    padding: 12px;
+    max-width: 100%; /* Allow full width on mobile */
+  }
+
+  /* Adjust search input and button layout */
+  .search-input-container {
+    flex-direction: column; /* Stack input and button vertically */
+    gap: 12px;
+  }
+
+  .search-input {
+    padding: 10px;
+    font-size: 14px; /* Smaller font size for mobile */
+  }
+
+  .search-button {
+    padding: 10px;
+    font-size: 14px; /* Smaller button */
+  }
+
+  /* Hide the category dropdown completely on mobile screens */
+  .category-dropdown {
+    display: none; /* Hides category dropdown on mobile */
+  }
+
+  /* Ensure the search filter is still visible on mobile */
+  .search-input-container {
+    display: block; /* Ensure it takes full width */
+  }
+
+  /* Event Cards Layout for Mobile */
+  .events-list {
+    grid-template-columns: 1fr; /* Stack event cards vertically on small screens */
+  }
+
+  /* Heading font size adjustment */
+  .heading {
+    font-size: 24px; /* Smaller font size for mobile */
+  }
+
+  /* Adjust padding and margins */
+  .events-page {
+    padding: 16px; /* Reduce padding on mobile */
+  }
+
+  /* Adjust Event Card Title and Description for Mobile */
+  .event-card-title {
+    font-size: 18px; /* Smaller title font size for mobile */
+  }
+
+  .event-card-description {
+    font-size: 12px; /* Smaller description font size for mobile */
+  }
+
+  /* Adjust Add Event Button for Mobile */
+  .add-event-button {
+    bottom: 20px; /* Adjust for mobile screens */
+    right: 20px; /* Adjust for mobile screens */
+  }
+}
+
 /* Media Query for smaller screens */
 @media (max-width: 768px) {
   /* Event Cards Layout Adjustments */

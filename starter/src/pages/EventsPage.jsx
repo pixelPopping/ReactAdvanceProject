@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useLoaderData, useLocation, Link } from "react-router-dom";
-import { TextInput } from "../components/ui/TextInput";
-import Button from "../components/ui/Button";
+import { TextInput } from "../components/ui/TextInput"; // Import your custom TextInput component
 import EventCard from "../components/EventCard";
 import { toast } from "react-toastify"; // Import toast for success and error messages
 import "react-toastify/dist/ReactToastify.css"; // Import toast CSS
 import "./EventsPage.css";
+import Button from "../components/ui/Button";
 
 export const loader = async () => {
   const eventsResponse = await fetch("http://localhost:3000/events");
@@ -77,7 +77,12 @@ export const EventsPage = () => {
   const filteredEvents = events.filter((event) => {
     const matchesSearch =
       event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.description?.toLowerCase().includes(searchQuery.toLowerCase());
+      event.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      categories
+        .filter((category) =>
+          category.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        .some((category) => event.categoryIds.includes(category.id));
 
     const matchesCategory =
       selectedCategory === "" ||
@@ -94,23 +99,30 @@ export const EventsPage = () => {
       <h1 className="heading">Events</h1>
 
       <div className="filters">
-        <TextInput
-          value={searchQuery}
-          onChange={handleSearchChange}
-          placeholder="Search for events..."
-        />
-        <select
-          className="category-select"
-          value={selectedCategory}
-          onChange={handleCategoryChange}
-        >
-          <option value="">All Categories</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
+        {/* Use the custom TextInput component for search */}
+        <div className="search-input-container">
+          <TextInput
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Search for events or categories..."
+          />
+        </div>
+
+        {/* Category filter dropdown */}
+        <div className="category-dropdown">
+          <select
+            className="category-select"
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+          >
+            <option value="">All Categories</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <Link to="/FormPage">

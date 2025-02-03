@@ -1,67 +1,40 @@
-import React, { useEffect, useState } from "react";
-import "./SearchFilter.css";
+// SearchFilter.js
+import React from "react";
+import "./SearchFilter.css"; // Make sure this file has the styles mentioned before
 
-export const SearchFilter = ({
-  categories = [],
+const SearchFilter = ({
+  searchQuery,
+  onSearchChange,
+  categories,
   selectedCategory,
   onCategoryChange,
-  onSearch,
-  value = "",
 }) => {
-  const [searchTerm, setSearchTerm] = useState(value);
-
-  // Sync local state with the value prop
-  useEffect(() => {
-    setSearchTerm(value);
-  }, [value]);
-
-  const handleSearchChange = (event) => {
-    const searchValue = event.target.value;
-    setSearchTerm(searchValue);
-    onSearch(searchValue); // Notify parent component
-  };
-
-  const handleCategorySelect = (categoryId) => {
-    onCategoryChange(categoryId); // Notify parent component
-  };
-
   return (
     <div className="search-filter">
-      {/* Search Input */}
       <div className="search-input-container">
         <input
           type="text"
           className="search-input"
-          placeholder="Search events..."
-          value={searchTerm}
-          onChange={handleSearchChange}
+          value={searchQuery}
+          onChange={onSearchChange}
+          placeholder="Search for events or categories..."
         />
-        <button className="search-button">🔍</button>
+        <button className="search-button">Search</button>
       </div>
 
-      {/* Category Dropdown */}
       <div className="category-dropdown">
-        <button className="category-button">
-          {categories.find((cat) => cat.id === selectedCategory)?.name ||
-            "All Categories"}
-        </button>
-        <ul className="category-list">
-          <li
-            className="category-item"
-            onClick={() => handleCategorySelect("")}
-          >
-            All Categories
-          </li>
+        <select
+          className="category-select"
+          value={selectedCategory}
+          onChange={onCategoryChange}
+        >
+          <option value="">All Categories</option>
           {categories.map((category) => (
-            <li
-              key={category.id}
-              className="category-item"
-              onClick={() => handleCategorySelect(category.id)}
-            >
+            <option key={category.id} value={category.id}>
               {category.name}
-            </li>
+            </option>
           ))}
-        </ul>
+        </select>
       </div>
     </div>
   );

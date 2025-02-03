@@ -23,7 +23,9 @@
       "title": "Trampoline party",
       "description": "Bounce around with your friends",
       "image": "https://i.pinimg.com/736x/3d/2f/af/3d2faf4e3188d34a9fcdc00df59e77b0.jpg",
-      "categoryIds": [2],
+      "categoryIds": [
+        2
+      ],
       "location": "My back yard",
       "startTime": "2023-03-10T18:00",
       "endTime": "2023-03-10T17:00:00.000Z"
@@ -34,7 +36,9 @@
       "title": "Laser Tag mania",
       "description": "Let's play laser tag!",
       "image": "https://www.ctvnews.ca/polopoly_fs/1.5118552.1600965663!/httpImage/image.jpg_gen/derivatives/landscape_1020/image.jpg",
-      "categoryIds": [2],
+      "categoryIds": [
+        2
+      ],
       "location": "Blinded by the Lights Laser Tag, 15 Main St.",
       "startTime": "2023-04-06T18:46",
       "endTime": "2023-04-06T17:46"
@@ -42,22 +46,26 @@
     {
       "id": "3",
       "createdBy": 2,
-      "title": "Badminton game",
+      "title": "game",
       "description": "Hit that shuttle!",
       "image": "https://wincacademy.github.io/webpages/media/pexels-vladvictoria-2202685.jpg",
-      "categoryIds": [1, 2],
+      "categoryIds": [
+        "1",
+        "2"
+      ],
       "location": "The Park",
       "startTime": "2023-03-15T12:00:00.000Z",
       "endTime": "2023-03-15T13:30:00.000Z"
     },
-
     {
-      "id": 4,
+      "id": "4",
       "createdBy": 2,
       "title": "Yoga",
       "description": "It's a bit of a stretch.",
       "image": "https://wincacademy.github.io/webpages/media/pexels-gabby-k-5384538.jpg",
-      "categoryIds": [3],
+      "categoryIds": [
+        3
+      ],
       "location": "Shavasana Yoga School",
       "startTime": "2023-03-09T06:00:00.000Z",
       "endTime": "2023-03-09T07:00:00.000Z"
@@ -65,11 +73,111 @@
     {
       "id": "2dc0",
       "title": "Hbo opleiding Novi ",
-      "description": "Fullstack DevOps",
-      "categoryIds": ["8", "1", "3", "4", "6", "5"],
+      "description": "Fullstack- Bootcamp DevOps",
+      "categoryIds": [
+        "1",
+        "3",
+        "4",
+        "8"
+      ],
       "location": "Online ",
       "startTime": "2025-02-01T10:00",
       "endTime": "2026-02-01T11:00"
+    },
+    {
+      "id": "3cb7",
+      "title": "Victorious ",
+      "description": "The finall it was a tough one !!!",
+      "categoryIds": [
+        "6",
+        "3",
+        "1"
+      ],
+      "location": "Rotterdam",
+      "startTime": "2025-01-31T18:00",
+      "endTime": "2025-01-31T18:01"
+    },
+    {
+      "id": "c3e3",
+      "title": "Waiting for my certificaat",
+      "description": "Im i Done Now???",
+      "categoryIds": [
+        "1",
+        "6",
+        "3",
+        "2"
+      ],
+      "location": "Rotterdam",
+      "startTime": "2025-02-18T18:25",
+      "endTime": "2025-02-18T18:30"
+    },
+    {
+      "id": "227e",
+      "title": "Spring is coming ",
+      "description": "Spring",
+      "categoryIds": [
+        "13",
+        "3",
+        "6"
+      ],
+      "location": "Netherlands",
+      "startTime": "2025-02-03T18:00",
+      "endTime": "2025-02-03T18:53"
+    },
+    {
+      "id": "ba78",
+      "title": "Mona Lisa ",
+      "description": "Expidition louvre ",
+      "categoryIds": [
+        "12",
+        "10",
+        "3",
+        "4"
+      ],
+      "location": "Paris ",
+      "startTime": "2025-12-12T18:55",
+      "endTime": "2025-12-12T19:01"
+    },
+    {
+      "id": "a7ed",
+      "title": "Beef rengdan ",
+      "description": "Recipie ",
+      "categoryIds": [
+        "14",
+        "3",
+        "6",
+        "9"
+      ],
+      "location": "Cooking Studio ",
+      "startTime": "2025-11-22T13:00",
+      "endTime": "2025-11-22T14:00"
+    },
+    {
+      "id": "e9f2",
+      "title": "Bumble ",
+      "description": "Dating ",
+      "categoryIds": [
+        "11",
+        "3",
+        "5"
+      ],
+      "location": "SomeWhere ",
+      "startTime": "2025-02-02T19:00",
+      "endTime": "2025-02-02T20:00"
+    },
+    {
+      "id": "8463",
+      "title": "Metallica, Linkinpark, Slipknot ",
+      "description": "Rock in Lasvegas ",
+      "categoryIds": [
+        "3",
+        "5",
+        "7",
+        "10"
+      ],
+      "location": "Nervada ",
+      "startTime": "2025-04-24T10:00",
+      "endTime": "2025-04-24T23:00"
     }
   ],
   "categories": [
