@@ -1,13 +1,181 @@
+/* Global Styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #f2f2f2;
+  color: #333;
+  line-height: 1.5;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Google Sans", sans-serif;
+  color: #202124;
+}
+
+/* Main page container */
+.events-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Heading */
+.heading {
+  font-size: 32px;
+  font-weight: 600;
+  color: #202124;
+  margin-bottom: 24px;
+}
+
+/* Filter section */
+.filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  justify-content: space-between;
+}
+
+.filters input,
+.filters select {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #dadce0;
+  width: 220px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.filters input:focus,
+.filters select:focus {
+  outline: none;
+  border-color: #6200ea;
+  box-shadow: 0 0 8px rgba(98, 0, 234, 0.3);
+}
+
+/* Container styles for the search filter and categories dropdown */
+.search-filter {
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between; /* For larger screens */
+  align-items: center;
+  position: sticky;
+  top: 20px;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+/* Adjusted layout for search input and categories dropdown within the same block */
+.search-input-container {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.search-input {
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 24px;
+  background-color: #f7f7f7;
+  color: #333;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #4285f4;
+  background-color: #ffffff;
+  outline: none;
+}
+
+/* Category dropdown styles */
+.category-dropdown {
+  width: 200px; /* Default width for larger screens */
+}
+
+.category-select {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 24px;
+  background-color: #f7f7f7;
+  color: #333;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 10 10%22%3E%3Cpath fill=%22%23ccc%22 d=%22M5 7l3-3H2z%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  transition: border 0.3s ease;
+}
+
+.category-select:focus {
+  border-color: #4285f4;
+  outline: none;
+}
+
+/* Event Cards List */
+.events-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding-bottom: 80px;
+}
+
+/* Add Event Button */
+.add-event-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #6200ea;
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.add-event-button:hover {
+  background-color: #3700b3;
+  transform: translateY(-4px);
+}
+
 /* Event Card */
 .event-card {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-width: 100%; /* Allow cards to take up full available width on small screens */
-  margin: 16px auto; /* Centered horizontally */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
 }
 
 .event-card:hover {
@@ -15,134 +183,198 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
-/* Event Image Container */
-.event-image-container {
+.event-card img {
   width: 100%;
   height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 16px;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.event-image {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 16px;
 }
 
-.no-image {
-  color: #888;
-  font-size: 16px;
-  font-style: italic;
-}
-
-/* Event Title */
-.event-title {
+/* Event Card Title */
+.event-card-title {
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 500;
+  color: #202124;
   margin-bottom: 8px;
 }
 
-/* Event Description */
-.event-description {
+/* Event Card Description */
+.event-card-description {
   font-size: 14px;
-  color: #555;
+  color: #5f6368;
+  line-height: 1.6;
   margin-bottom: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
-/* Event Details */
-.event-details {
+/* Category Chips */
+.event-card-category {
+  display: inline-block;
+  background-color: #e8f0fe;
+  color: #4285f4;
   font-size: 14px;
-  color: #333;
-  margin-bottom: 16px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  margin: 4px;
+  font-weight: 600;
 }
 
-.event-time,
-.event-location {
-  margin-bottom: 8px;
+/* Loading and Error States */
+.loading,
+.error {
+  font-size: 18px;
+  color: #666;
+  text-align: center;
+}
+
+/* Media Query for small screens (Mobile - 400px) */
+@media (max-width: 400px) {
+  /* Adjust search filter container */
+  .search-filter {
+    flex-direction: column; /* Stack vertically on mobile */
+    padding: 16px;
+    width: 100%;
+    margin: 0;
+  }
+
+  /* Adjust search input and button layout */
+  .search-input-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .search-input {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .search-button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  /* Category dropdown adjustment for mobile */
+  .category-dropdown {
+    width: 100%; /* Full width on mobile */
+    margin-top: 16px; /* Spacing between search input and dropdown */
+  }
+
+  /* Event Cards Layout for Mobile */
+  .events-list {
+    grid-template-columns: 1fr;
+  }
+
+  /* Heading font size adjustment */
+  .heading {
+    font-size: 24px;
+  }
+
+  /* Adjust padding and margins */
+  .events-page {
+    padding: 16px;
+  }
+
+  /* Adjust Event Card Title and Description for Mobile */
+  .event-card-title {
+    font-size: 18px;
+  }
+
+  .event-card-description {
+    font-size: 12px;
+  }
+
+  /* Adjust Add Event Button for Mobile */
+  .add-event-button {
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+/* Media Query for larger screens (above 400px and up to 768px) */
+@media (max-width: 768px) {
+  .events-list {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  .event-card-category {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}
+
+/* Footer Styles */
+footer {
+  background-color: #f2f2f2;
+  text-align: center;
+  padding: 20px;
 }
 
 /* Event Categories */
 .event-categories {
-  margin-top: 16px;
+  margin-top: 8px; /* Adjusted top margin to move the categories section closer to the other content */
+  max-height: 200px;
+  overflow-y: auto; /* Allow scrolling if too many categories */
+  position: relative;
+  padding-right: 8px; /* Space for scrollbar */
+  padding-left: 8px; /* Add some padding to balance the layout */
 }
 
 .categories-heading {
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 8px;
+  margin-bottom: 4px; /* Reduced bottom margin to bring categories text higher */
 }
 
 .categories-list {
-  display: block; /* Stack the badges vertically */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
+/* Category Badge Styling */
 .category-badge {
-  background-color: #e0f7fa;
-  color: #00796b;
-  font-size: 12px;
+  background-color: #ff7043; /* Orange color for category badge */
+  color: white;
+  font-size: 14px;
   padding: 6px 12px;
   border-radius: 16px;
   font-weight: 600;
-  margin-bottom: 8px; /* Space between the badges */
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .category-badge:hover {
-  background-color: #00796b;
-  color: #ffffff;
+  background-color: #ff5722; /* Darker orange on hover */
+  transform: scale(1.05); /* Slight scaling effect on hover */
 }
 
-/* Media Query for smaller screens */
-@media (max-width: 768px) {
-  .event-card {
-    padding: 12px; /* Reduce padding on small screens */
-    margin: 12px; /* Adjust margin to fit better on smaller screens */
-  }
-
-  .event-title {
-    font-size: 18px; /* Slightly smaller title */
-  }
-
-  .event-description,
-  .event-details {
-    font-size: 12px; /* Make text smaller for better fit */
-  }
-
-  .event-categories {
-    margin-top: 12px; /* Adjust margin */
-  }
-
-  .category-badge {
-    font-size: 10px; /* Smaller category badges */
-    padding: 4px 8px; /* Adjust padding for smaller screens */
-  }
+/* Custom Scrollbar */
+.event-categories::-webkit-scrollbar {
+  width: 8px; /* Narrow width for a more minimal look */
+  background-color: #f1f1f1; /* Light background for the track */
+  border-radius: 10px; /* Smooth rounded corners */
 }
 
-@media (max-width: 400px) {
-  .event-card {
-    padding: 8px; /* Further reduce padding for very small screens */
-    margin: 8px; /* Smaller margin */
-  }
+.event-categories::-webkit-scrollbar-thumb {
+  background-color: #6200ea; /* Google purple for the thumb */
+  border-radius: 10px; /* Rounded thumb */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Soft shadow for the thumb */
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
 
-  .event-title {
-    font-size: 16px; /* Adjust title size further */
-  }
+.event-categories::-webkit-scrollbar-thumb:hover {
+  background-color: #3700b3; /* Darker purple when hovered */
+}
 
-  .event-description,
-  .event-details {
-    font-size: 12px; /* Keep text readable but smaller */
-  }
+.event-categories::-webkit-scrollbar-track {
+  background-color: #f5f5f5; /* Light track background */
+  border-radius: 10px; /* Rounded track */
+}
 
-  .category-badge {
-    font-size: 8px; /* Smallest font for badges */
-    padding: 4px 8px; /* Adjust padding for small screens */
-  }
-
-  .event-image-container {
-    height: 150px; /* Make image container smaller on small screens */
-  }
+.event-categories::-webkit-scrollbar-track:hover {
+  background-color: #e1e1e1; /* Slightly darker on hover */
 }

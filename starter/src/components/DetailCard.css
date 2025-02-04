@@ -19,11 +19,11 @@ a {
   color: inherit;
 }
 
-h1,
-h2,
-h3 {
-  font-family: "Google Sans", sans-serif;
-  color: #202124;
+.silkscreenRegular {
+  font-family: "Silkscreen", serif;
+  font-size: xx-large;
+  font-weight: 400;
+  font-style: normal;
 }
 
 /* Event Detail Card */

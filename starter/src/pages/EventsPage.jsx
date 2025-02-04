@@ -98,7 +98,7 @@ export const EventsPage = () => {
   return (
     <Layout>
       <div className="events-page">
-        <h1 className="heading">Events</h1>
+        <h1 className="silkscreenRegular">Events</h1>
 
         <div className="filters">
           {/* Use the custom TextInput component for search */}

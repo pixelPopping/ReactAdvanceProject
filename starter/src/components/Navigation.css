@@ -1,45 +1,53 @@
-/* Navigation container styling */
+/* Navigation container */
 .navigation-container {
-  background-color: #ffffff;
+  background-color: #ffffff; /* White background for a clean, fresh look */
   padding: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* subtle shadow */
-  border-radius: 8px;
-  position: sticky;
-  top: 0;
-  width: 100%;
-  z-index: 100;
-}
-
-/* Navigation links container */
-.navigation-links {
   display: flex;
   justify-content: center;
-  gap: 20px;
   align-items: center;
-  flex-wrap: wrap;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  border-bottom: 2px solid #f1f1f1; /* Light border at the bottom */
 }
 
-/* Navigation links styling */
+/* Links container */
+.navigation-links {
+  display: flex;
+  gap: 32px; /* Space between the links */
+}
+
+/* Individual nav link */
 .nav-link {
-  text-decoration: none; /* Remove underline from the links */
+  text-decoration: none;
+  color: #333333; /* Dark gray color for text */
+  font-size: 18px;
+  font-weight: 500;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
-.nav-link span {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333333;
-  transition: color 0.3s ease; /* Smooth color transition */
-}
-
-.nav-link span:hover {
-  color: #f39c12; /* Hover link color */
+/* Hover effect */
+.nav-link:hover {
+  color: #6200ea; /* Purple color for hover */
+  transform: translateY(-2px); /* Subtle lift on hover */
 }
 
 /* Active link styling */
 .nav-link .active {
-  color: #f39c12; /* Active link color */
+  color: #6200ea; /* Purple for active link */
+  font-weight: bold;
+  text-decoration: underline; /* Underline for active state */
 }
 
-.nav-link span:active {
-  color: #e67e22; /* Darker shade for active state */
+/* Add media query for responsiveness (if necessary) */
+@media (max-width: 768px) {
+  .navigation-container {
+    padding: 12px;
+  }
+
+  .navigation-links {
+    gap: 16px;
+  }
+
+  .nav-link {
+    font-size: 16px;
+  }
 }

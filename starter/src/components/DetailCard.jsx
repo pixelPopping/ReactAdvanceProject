@@ -39,7 +39,7 @@ const DetailCard = ({ event = {}, categories = [], createdByUser = null }) => {
 
   return (
     <div className="event-detail-card">
-      <h1 className="event-details-header">Event Details</h1>
+      <h1 className="silkscreenRegular">Event Details</h1>
 
       <div className="event-title">{event.title}</div>
       {event.image && (

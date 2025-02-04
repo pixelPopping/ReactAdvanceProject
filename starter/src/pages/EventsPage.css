@@ -1,4 +1,6 @@
 /* Global Styles */
+@import url("https://fonts.googleapis.com/css2?family=Barriecito&family=Silkscreen:wght@400;700&display=swap");
+
 *,
 *::before,
 *::after {
@@ -14,16 +16,16 @@ body {
   line-height: 1.5;
 }
 
+.silkscreenRegular {
+  font-family: "Silkscreen", serif;
+  font-size: xx-large;
+  font-weight: 400;
+  font-style: normal;
+}
+
 a {
   text-decoration: none;
   color: inherit;
-}
-
-h1,
-h2,
-h3 {
-  font-family: "Google Sans", sans-serif;
-  color: #202124;
 }
 
 /* Main page container */
@@ -68,39 +70,101 @@ h3 {
   box-shadow: 0 0 8px rgba(98, 0, 234, 0.3);
 }
 
+/* Container styles for the search filter and categories dropdown */
+.search-filter {
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between; /* For larger screens */
+  align-items: center;
+  position: sticky;
+  top: 20px;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+/* Adjusted layout for search input and categories dropdown within the same block */
+.search-input-container {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.search-input {
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 24px;
+  background-color: #f7f7f7;
+  color: #333;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #4285f4;
+  background-color: #ffffff;
+  outline: none;
+}
+
+/* Category dropdown styles */
+.category-dropdown {
+  width: 200px; /* Default width for larger screens */
+}
+
+.category-select {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 24px;
+  background-color: #f7f7f7;
+  color: #333;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 10 10%22%3E%3Cpath fill=%22%23ccc%22 d=%22M5 7l3-3H2z%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  transition: border 0.3s ease;
+}
+
+.category-select:focus {
+  border-color: #4285f4;
+  outline: none;
+}
+
 /* Event Cards List */
 .events-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
-  padding-bottom: 80px; /* Makes space for the Add Event button at the bottom */
+  padding-bottom: 80px;
 }
 
 /* Add Event Button */
 .add-event-button {
-  position: fixed; /* Keeps it fixed on the screen */
-  bottom: 30px; /* Places the button near the bottom of the screen */
-  right: 30px; /* Places the button near the right side */
-  background-color: #6200ea; /* Purple background */
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #6200ea;
   color: white;
   border: none;
-  padding: 16px 32px; /* Bigger padding */
-  border-radius: 50px; /* Rounded corners */
-  font-size: 18px; /* Larger font */
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-size: 18px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Soft shadow for better visibility */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .add-event-button:hover {
-  background-color: #3700b3; /* Darker purple when hovered */
-  transform: translateY(-4px); /* Slightly lifts the button on hover */
-}
-
-/* Add Event Button Icon (if any) */
-.add-event-button i {
-  margin-right: 10px;
-  font-size: 24px; /* Adjust icon size if you're using one */
+  background-color: #3700b3;
+  transform: translateY(-4px);
 }
 
 /* Event Card */
@@ -170,160 +234,96 @@ h3 {
   text-align: center;
 }
 
-/* Media Query for small screens (Mobile) */
-@media (max-width: 600px) {
+/* Media Query for small screens (Mobile - 400px) */
+@media (max-width: 400px) {
   /* Adjust search filter container */
   .search-filter {
-    padding: 12px;
-    max-width: 100%; /* Allow full width on mobile */
+    flex-direction: column; /* Stack vertically on mobile */
+    padding: 16px;
+    width: 100%;
+    margin: 0;
   }
 
   /* Adjust search input and button layout */
   .search-input-container {
-    flex-direction: column; /* Stack input and button vertically */
+    flex-direction: column;
     gap: 12px;
   }
 
   .search-input {
     padding: 10px;
-    font-size: 14px; /* Smaller font size for mobile */
+    font-size: 14px;
   }
 
   .search-button {
     padding: 10px;
-    font-size: 14px; /* Smaller button */
+    font-size: 14px;
   }
 
-  /* Hide the category dropdown completely on mobile screens */
+  /* Category dropdown adjustment for mobile */
   .category-dropdown {
-    display: none; /* Hides category dropdown on mobile */
-  }
-
-  /* Ensure the search filter is still visible on mobile */
-  .search-input-container {
-    display: block; /* Ensure it takes full width */
+    width: 100%; /* Full width on mobile */
+    margin-top: 16px; /* Spacing between search input and dropdown */
   }
 
   /* Event Cards Layout for Mobile */
   .events-list {
-    grid-template-columns: 1fr; /* Stack event cards vertically on small screens */
+    grid-template-columns: 1fr;
   }
 
   /* Heading font size adjustment */
   .heading {
-    font-size: 24px; /* Smaller font size for mobile */
+    font-size: 24px;
   }
 
   /* Adjust padding and margins */
   .events-page {
-    padding: 16px; /* Reduce padding on mobile */
+    padding: 16px;
   }
 
   /* Adjust Event Card Title and Description for Mobile */
   .event-card-title {
-    font-size: 18px; /* Smaller title font size for mobile */
+    font-size: 18px;
   }
 
   .event-card-description {
-    font-size: 12px; /* Smaller description font size for mobile */
+    font-size: 12px;
   }
 
   /* Adjust Add Event Button for Mobile */
   .add-event-button {
-    bottom: 20px; /* Adjust for mobile screens */
-    right: 20px; /* Adjust for mobile screens */
+    bottom: 20px;
+    right: 20px;
   }
 }
 
-/* Media Query for smaller screens */
+/* Media Query for larger screens (above 400px and up to 768px) */
 @media (max-width: 768px) {
-  /* Event Cards Layout Adjustments */
   .events-list {
-    grid-template-columns: repeat(
-      auto-fill,
-      minmax(250px, 1fr)
-    ); /* Reduce the size of cards on smaller screens */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
 
-  /* Adjust Category Chips to avoid overflow */
   .event-card-category {
     font-size: 12px;
     padding: 4px 8px;
   }
 }
 
-@media (max-width: 400px) {
-  /* Further adjustments for smaller screens */
-  .events-list {
-    grid-template-columns: 1fr; /* Stack the cards vertically */
+/* Media Query for very large screens (above 1200px) */
+@media (min-width: 1200px) {
+  .search-filter {
+    max-width: 1000px;
+    margin: 0 auto;
   }
 
-  /* Make sure the categories stay within the card */
-  .event-card-category {
-    font-size: 12px;
-    padding: 4px 8px;
-    word-wrap: break-word; /* Ensure categories wrap onto the next line if necessary */
+  .events-list {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
 }
 
 /* Footer Styles */
 footer {
-  background-color: #f2f2f2; /* Light gray background for a clean look */
-  padding: 20px 0; /* Ample padding around the footer */
-  text-align: center; /* Centered text */
-  font-size: 14px; /* Medium text size */
-  color: #5f6368; /* Soft gray text color */
-  border-top: 1px solid #dadce0; /* Subtle border at the top */
-}
-
-footer a {
-  color: #4285f4; /* Google blue for the link */
-  text-decoration: none; /* Remove underlines */
-}
-
-footer a:hover {
-  text-decoration: underline; /* Underline the link on hover */
-  color: #0b3d91; /* Darken the blue when hovered */
-}
-
-footer p {
-  margin: 8px 0; /* Space between paragraphs */
-}
-
-footer .footer-container {
-  max-width: 1200px;
-  margin: 0 auto; /* Center the content in large screens */
-  padding: 0 16px; /* Add some padding on the sides */
-}
-
-footer .footer-links {
-  margin-top: 16px; /* Add space above the links */
-}
-
-footer .footer-links a {
-  margin: 0 12px; /* Space between links */
-  font-size: 14px; /* Keep links at the same size as the text */
-  color: #5f6368; /* Soft gray for the links */
-}
-
-footer .footer-links a:hover {
-  color: #4285f4; /* Change color on hover to Google blue */
-}
-
-/* Responsive Design for Footer */
-@media (max-width: 600px) {
-  footer {
-    font-size: 12px; /* Smaller text size on mobile */
-    padding: 16px 0; /* Less padding on smaller screens */
-  }
-
-  footer .footer-links {
-    display: block;
-    margin-top: 12px; /* Stack the links vertically on mobile */
-  }
-
-  footer .footer-links a {
-    margin-bottom: 8px; /* Space between each link */
-    text-align: center; /* Center align the links */
-  }
+  background-color: #f2f2f2;
+  text-align: center;
+  padding: 20px;
 }

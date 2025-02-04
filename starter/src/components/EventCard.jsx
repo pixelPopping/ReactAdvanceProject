@@ -45,6 +45,7 @@ const EventCard = ({ event, categories }) => {
   return (
     <div className="event-card">
       <Link to={`/event/${event.id}`}>
+        <h2 className="event-title">{event.title}</h2>
         <div className="event-image-container">
           {event.image ? (
             <img src={event.image} alt={event.title} className="event-image" />
@@ -52,8 +53,6 @@ const EventCard = ({ event, categories }) => {
             <p className="no-image">No Image Available</p>
           )}
         </div>
-
-        <h2 className="event-title">{event.title}</h2>
       </Link>
 
       <p className="event-description">{event.description}</p>

@@ -24,7 +24,20 @@
       "description": "Bounce around with your friends",
       "image": "https://i.pinimg.com/736x/3d/2f/af/3d2faf4e3188d34a9fcdc00df59e77b0.jpg",
       "categoryIds": [
-        2
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14"
       ],
       "location": "My back yard",
       "startTime": "2023-03-10T18:00",
@@ -37,11 +50,11 @@
       "description": "Let's play laser tag!",
       "image": "https://www.ctvnews.ca/polopoly_fs/1.5118552.1600965663!/httpImage/image.jpg_gen/derivatives/landscape_1020/image.jpg",
       "categoryIds": [
-        2
+        "1"
       ],
       "location": "Blinded by the Lights Laser Tag, 15 Main St.",
       "startTime": "2023-04-06T18:46",
-      "endTime": "2023-04-06T17:46"
+      "endTime": "2023-04-06T20:00"
     },
     {
       "id": "3",
@@ -51,7 +64,19 @@
       "image": "https://wincacademy.github.io/webpages/media/pexels-vladvictoria-2202685.jpg",
       "categoryIds": [
         "1",
-        "2"
+        "2",
+        "14",
+        "13",
+        "12",
+        "11",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3"
       ],
       "location": "The Park",
       "startTime": "2023-03-15T12:00:00.000Z",
@@ -105,7 +130,17 @@
         "1",
         "6",
         "3",
-        "2"
+        "2",
+        "4",
+        "5",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14"
       ],
       "location": "Rotterdam",
       "startTime": "2025-02-18T18:25",
@@ -146,7 +181,17 @@
         "14",
         "3",
         "6",
-        "9"
+        "9",
+        "1",
+        "2",
+        "4",
+        "5",
+        "7",
+        "8",
+        "10",
+        "11",
+        "12",
+        "13"
       ],
       "location": "Cooking Studio ",
       "startTime": "2025-11-22T13:00",
