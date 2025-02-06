@@ -223,6 +223,17 @@
       "location": "Nervada ",
       "startTime": "2025-04-24T10:00",
       "endTime": "2025-04-24T23:00"
+    },
+    {
+      "id": "8e20",
+      "title": "Congratulations",
+      "description": "Lets Drink on it up to the next step in IT",
+      "categoryIds": [
+        "3"
+      ],
+      "location": "Dev World ",
+      "startTime": "2025-01-06T18:55",
+      "endTime": "2025-01-06T19:00"
     }
   ],
   "categories": [

@@ -1,22 +1,23 @@
 import React from "react";
-import "./SearchFilter.css"; // Make sure this file has the styles mentioned before
+import "./SearchFilter.css"; // Ensure styles are updated for grid and responsiveness
 
-const SearchFilter = ({
+export const SearchFilter = ({
   searchQuery,
   onSearchChange,
   categories,
   selectedCategory,
   onCategoryChange,
-  onSearchSubmit, // Added to handle form submission or button click
+  onSearchSubmit, // Handle form submission or button click
 }) => {
   const handleSearchSubmit = (event) => {
     event.preventDefault();
-    onSearchSubmit(searchQuery, selectedCategory); // Call the passed function to trigger search
+    onSearchSubmit(searchQuery, selectedCategory); // Trigger search
   };
 
   return (
     <div className="search-filter">
       <form onSubmit={handleSearchSubmit} className="search-input-container">
+        {/* Search Input */}
         <input
           type="text"
           className="search-input"
@@ -25,9 +26,6 @@ const SearchFilter = ({
           placeholder="Search for events or categories..."
           aria-label="Search for events or categories"
         />
-        <button type="submit" className="search-button">
-          Search
-        </button>
       </form>
 
       <div className="category-dropdown">

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useLoaderData, useLocation, Link } from "react-router-dom";
-import { TextInput } from "../components/ui/TextInput"; // Import your custom TextInput component
 import EventCard from "../components/EventCard";
-import { toast } from "react-toastify"; // Import toast for success and error messages
-import "react-toastify/dist/ReactToastify.css"; // Import toast CSS
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/ui/Button";
-import Layout from "../components/Layout"; // Import Layout component
+import Layout from "../components/Layout";
 import "./EventsPage.css";
+import SearchFilter from "../components/SearchFilter"; // Assuming SearchFilter component is correctly imported
 
 export const loader = async () => {
   const eventsResponse = await fetch("http://localhost:3000/events");
@@ -22,7 +22,6 @@ export const loader = async () => {
   return { events, categories };
 };
 
-// Main EventsPage Component
 export const EventsPage = () => {
   const { events: initialEvents, categories: initialCategories } =
     useLoaderData();
@@ -33,9 +32,8 @@ export const EventsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
-  const [toastShown, setToastShown] = useState(false); // Track if toast has been shown
+  const [toastShown, setToastShown] = useState(false);
 
-  // Fetch events and categories when the location changes
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -55,10 +53,9 @@ export const EventsPage = () => {
         setEvents(eventsData);
         setCategories(categoriesData);
 
-        // Show the toast message only once
         if (!toastShown) {
           toast.success("Events loaded successfully!");
-          setToastShown(true); // Set toastShown to true after showing the toast
+          setToastShown(true);
         }
       } catch (error) {
         console.error("Failed to load data:", error);
@@ -69,12 +66,11 @@ export const EventsPage = () => {
     };
 
     fetchData();
-  }, [location, toastShown]); // We use toastShown here to prevent multiple toasts
+  }, [location, toastShown]);
 
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
   const handleCategoryChange = (e) => setSelectedCategory(e.target.value);
 
-  // Filtering events based on search query and selected category
   const filteredEvents = events.filter((event) => {
     const matchesSearch =
       event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -97,66 +93,51 @@ export const EventsPage = () => {
 
   return (
     <Layout>
-      <div className="events-page">
-        <h1 className="silkscreenRegular">Events</h1>
-
-        <div className="filters">
-          {/* Use the custom TextInput component for search */}
-          <div className="search-input-container">
-            <TextInput
-              value={searchQuery}
-              onChange={handleSearchChange}
-              placeholder="Search for events or categories..."
-            />
-          </div>
+      {/* Add the class here to apply the background for the full page */}
+      <div className="page-with-background">
+        <div className="events-page">
+          <h1 className="silkscreenRegular">Events</h1>
 
           {/* Category filter dropdown */}
-          <div className="category-dropdown">
-            <select
-              className="category-select"
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-            >
-              <option value="">All Categories</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+          <SearchFilter
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={handleCategoryChange}
+            onSearchSubmit={() => console.log("Search Submitted")} // Placeholder submit handler
+          />
 
-        <Link to="/FormPage">
-          <Button>Create New Event</Button>
-        </Link>
+          <Link to="/FormPage">
+            <Button>Create New Event</Button>
+          </Link>
 
-        {loading ? (
-          <p>Loading...</p>
-        ) : filteredEvents.length === 0 ? (
-          <p>No events found.</p>
-        ) : (
-          <div className="events-list">
-            {filteredEvents.map((event) => {
-              // Map categoryIds to category objects
-              const eventCategories = event.categoryIds
-                .map((categoryId) =>
-                  categories.find(
-                    (cat) => Number(categoryId) === Number(cat.id)
+          {loading ? (
+            <p>Loading...</p>
+          ) : filteredEvents.length === 0 ? (
+            <p>No events found.</p>
+          ) : (
+            <div className="events-list">
+              {filteredEvents.map((event) => {
+                const eventCategories = event.categoryIds
+                  .map((categoryId) =>
+                    categories.find(
+                      (cat) => Number(categoryId) === Number(cat.id)
+                    )
                   )
-                )
-                .filter(Boolean); // Filter out undefined values
+                  .filter(Boolean);
 
-              return (
-                <EventCard
-                  key={event.id}
-                  event={event}
-                  categories={eventCategories}
-                />
-              );
-            })}
-          </div>
-        )}
+                return (
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    categories={eventCategories}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </Layout>
   );
